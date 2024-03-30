@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script>
+	$(function() {
+		$( "#button" ).click(function() {
+			$( "#item" ).toggle();
+		});
+	});
+	</script>
+    <title>котейки!!</title>
+	<style>
+		a.socialLinkAdya:link 			{color:#9370db; text-decoration:none}
+		a.socialLinkGosha:link			{color:#a76bcf; text-decoration:none}
+		a.socialLinkAdya:visited		{color:#9370db; text-decoration:none}
+		a.socialLinkGosha:visited		{color:#a76bcf; text-decoration:none}
+		a:hover							{color:#69359c; text-decoration:underline}
+		a:active						{color:#9370db; text-decoration:underline}
+		a.socialLinkAdya:hover 			{color:#e79fc4; text-decoration:underline}
+		a.socialLinkGosha:hover 		{color:#ba55d3; text-decoration:underline}
+		.block {
+		display:block;
+		margin:auto;
+		width: 50%;
+		border-radius: 15px;
+		}
+		.fromtop {
+		margin-top: 5px;
+		}
+		.imagebg {
+		background-image: url("kittyback.jpg");
+		background-position: center;
+		background-repeat: repeat;
+		background-size: 512px;
+		}
+	</style>
+</head>
+<body class="imagebg" style="display: flex; flex-direction: column; height: 100%; height: -webkit-fill-available;">
+	<main>
+		<div style="flex: 1 0 auto;">
+			<h1 style="margin: auto; width: 256px; height: 38px; background-color: #dda0dd; border-radius: 15px; border: 3px solid #32174d;" align="center">котеечный сайт</h1>\
+				<div class="block" style="margin-bottom: 18px; width: 96px; height: 224px; background-color: #dda0dd; border: 3px solid #32174d;" align="center">
+					<img class="fromtop" src="catlogo.png" width="32" height="32"/>
+					<p align="center" style="margin-top: 2px;">котейки</p>
+					<img src="catlogo2.png" width="32" height="32"/>
+					<p align="center" style="margin-top: 2px;">котики</p>
+					<img src="catlogo3.png" width="32" height="32"/>
+					<p align="center" style="margin-top: 2px;">котёночки</p>
+				</div>
+			<div class="content" style="text-align: center; margin:auto; width: 512px; height: 80px; background-color: #dda0dd; border-radius: 15px; border: 3px solid #32174d;">
+				<p>здесь есть <b><span style="color:purple;">котейки</span></b>, <span style="font-size: 24px;">жмакни</span> чтоб получить котеек</p>
+				<a style="margin:auto; width: 128px; height: 16px;" id="button" href="#">жмакни</a>
+				<div id="item" style="text-align:center; margin-top: 30px; width: 512px; height: 268px; background-color: #dda0dd; border-radius: 15px; border: 3px solid #32174d;" hidden>
+					<img style="margin-top: 15px;" src="kitty1.gif" width="150" height="150"/>
+					<img src="kitty2.gif" style="margin-right:10px;" width="150" height="150"/>
+					<img style="margin-bottom: 10px;" src="socute.gif" width="400" height="110"/>
+						<div id="item" style="width: 512px; height: 98px; background-color: #dda0dd; border-radius: 15px; border: 3px solid #32174d;">
+							<p>ну прям <b> ТАКИЕ ХОРОШЕНЬКИЕ</b> я не могу</p> 
+							<p style="margin-bottom: 20px;">ещё и так на <u>нас</u> похожи!!<img src="lovecatemoji.gif" width="32", height="32"/></p>
+						</div>
+					<div align="center" style="flex: 0 0 auto; margin: auto; margin-top: 20px; width: 160px; height: 96px; background-color: #522d80; border-radius: 15px; border: 3px solid #32174d;">
+					<p style="margin-top: 5px; color: white;">мяу</p>
+						<table>
+							<tr>
+								<td><a href="https://t.me/kafferist" class="socialLinkGosha">тг Гоши</a></td> <td><a href="https://t.me/die_ok" class="socialLinkAdya">тг Ади</a></td>
+							</tr>
+							<tr>
+								<td><a href="https://vk.com/kafferist" class="socialLinkGosha">вк Гоши</a></td> <td><a href="https://vk.com/die_pleaze" class="socialLinkAdya">вк Ади</a></td>
+							</tr>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+</html>
