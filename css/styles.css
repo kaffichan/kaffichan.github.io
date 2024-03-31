@@ -1,0 +1,25 @@
+		a.socialLinkAdya:link 			{color:#9370db; text-decoration:none}
+		a.socialLinkGosha:link			{color:#a76bcf; text-decoration:none}
+		a.socialLinkAdya:visited		{color:#9370db; text-decoration:none}
+		a.socialLinkGosha:visited		{color:#a76bcf; text-decoration:none}
+		a:hover							{color:#69359c; text-decoration:underline}
+		a:active						{color:#9370db; text-decoration:underline}
+		a.socialLinkAdya:hover 			{color:#e79fc4; text-decoration:underline}
+		a.socialLinkGosha:hover 		{color:#ba55d3; text-decoration:underline}
+		.imagebg {
+		background-image: url("content/bg/kittyback.jpg");
+		background-position: center;
+		background-repeat: repeat;
+		background-size: 512px;
+		}
+		.blockstyle {
+		background-color: #dda0dd;
+		border-radius: 15px;
+		border: 3px solid #32174d;
+		}
+		.bottomblock {
+		margin-top:20px;
+		background-color: #522d80;
+		border-radius: 15px;
+		border: 3px solid #32174d;
+		}
