@@ -59,7 +59,7 @@
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		text-fill-color: transparent;
-		background-size: 500% auto;
+		background-size: 200% auto;
 		animation: rnbanim 10s ease-in-out infinite alternate;
 		-moz-animation: rnbanim 10s ease-in-out infinite alternate;
 		-webkit-animation: rnbanim 10s ease-in-out infinite alternate;
@@ -79,9 +79,9 @@
 		}
 		@-webkit-keyframes glow {
 		from {
-		text-shadow: 0 0 15px #fff, 0 0 20px #fff, 0 0 35px #B677B2, 0 0 40px #B677B2, 0 0 45px #7d2779, 0 0 50px #7d2779, 0 0 55px #7d2779, 0 0 60px #7d2779;
+		text-shadow: 0 0 30px #fff, 0 0 40px #B677B2, 0 0 50px #B677B2, 0 0 60px #7d2779,
 		}
 		to {
-		text-shadow: 0 0 55px #e827e8, 0 0 50px #e827e8, 0 0 45px #B760B5, 0 0 40px #B760B5, 0 0 35px #B760B5, 0 0 20px #fff;
+		text-shadow: 0 0 50px #e827e8, 0 0 40px #B760B5, 0 0 30px #B760B5, 0 0 20px #fff;
 		}
 		}
