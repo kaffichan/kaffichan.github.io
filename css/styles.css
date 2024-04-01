@@ -54,7 +54,7 @@
 		transform: rotate(5deg); 
 		}
 		.rnbw {
-		background: linear-gradient(to right, violet, indigo, blue, cyan, cyan, blue, indigo, violet);
+		background: linear-gradient(to right, pink, violet, cyan, cyan, violet, pink);
 		background-clip: text;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
