@@ -1,11 +1,11 @@
-		a.socialLinkAdya:link 			{color:#9370db; text-decoration:none}
-		a.socialLinkGosha:link			{color:#a76bcf; text-decoration:none}
-		a.socialLinkAdya:visited		{color:#9370db; text-decoration:none}
-		a.socialLinkGosha:visited		{color:#a76bcf; text-decoration:none}
+		a.socialLinkAdya:link 			{color:#FFD9FF; text-decoration:none}
+		a.socialLinkGosha:link			{color:#DFC1F5; text-decoration:none}
+		a.socialLinkAdya:visited		{color:#FFD9FF; text-decoration:none}
+		a.socialLinkGosha:visited		{color:#DFC1F5; text-decoration:none}
+		a.socialLinkAdya:hover 			{color:#ffc0cb; text-decoration:underline}
+		a.socialLinkGosha:hover 		{color:#ccccff; text-decoration:underline}
 		a:hover							{color:#69359c; text-decoration:underline}
 		a:active						{color:#9370db; text-decoration:underline}
-		a.socialLinkAdya:hover 			{color:#e79fc4; text-decoration:underline}
-		a.socialLinkGosha:hover 		{color:#ba55d3; text-decoration:underline}
 		.imagebg {
 		background-position: center;
 		background-size: 512px;
@@ -15,9 +15,73 @@
 		border-radius: 15px;
 		border: 3px solid #32174d;
 		}
-		.bottomblock {
-		margin-top:20px;
-		background-color: #522d80;
+		.sidewindow {
+		background-color: #311b4d;
 		border-radius: 15px;
 		border: 3px solid #32174d;
+		}
+		.sideblock {
+		background-color: #522d80;
+		border-radius: 0 15px 15px 0;
+		border: 3px solid #32174d;
+		}
+		.rot1 { 
+		-moz-transform: rotate(-10deg); 
+		-webkit-transform: rotate(-10deg); 
+		-o-transform: rotate(-10deg); 
+		-ms-transform: rotate(-10deg); 
+		transform: rotate(-10deg); 
+		}
+		.rot2 { 
+		-moz-transform: rotate(10deg); 
+		-webkit-transform: rotate(10deg); 
+		-o-transform: rotate(10deg); 
+		-ms-transform: rotate(10deg); 
+		transform: rotate(10deg); 
+		}
+		.rot3 { 
+		-moz-transform: rotate(-5deg); 
+		-webkit-transform: rotate(-5deg); 
+		-o-transform: rotate(-5deg); 
+		-ms-transform: rotate(-5deg); 
+		transform: rotate(-5deg); 
+		}
+		.rot4 { 
+		-moz-transform: rotate(5deg); 
+		-webkit-transform: rotate(5deg); 
+		-o-transform: rotate(5deg); 
+		-ms-transform: rotate(5deg); 
+		transform: rotate(5deg); 
+		}
+		.rnbw {
+		background: linear-gradient(to right, violet, indigo, blue, cyan, cyan, blue, indigo, violet);
+		background-clip: text;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		text-fill-color: transparent;
+		background-size: 500% auto;
+		animation: rnbanim 10s ease-in-out infinite alternate;
+		-moz-animation: rnbanim 10s ease-in-out infinite alternate;
+		-webkit-animation: rnbanim 10s ease-in-out infinite alternate;
+		}
+		@keyframes rnbanim {
+		0% { background-position: 0% 50%; 
+		}
+		100% { background-position: 100% 50%; 
+		}
+		}
+		.glow {
+		color: #fff;
+		text-align: center;
+		-webkit-animation: glow 1s ease-in-out infinite alternate;
+		-moz-animation: glow 1s ease-in-out infinite alternate;
+		animation: glow 1s ease-in-out infinite alternate;
+		}
+		@-webkit-keyframes glow {
+		from {
+		text-shadow: 0 0 15px #fff, 0 0 20px #fff, 0 0 35px #B677B2, 0 0 40px #B677B2, 0 0 45px #7d2779, 0 0 50px #7d2779, 0 0 55px #7d2779, 0 0 60px #7d2779;
+		}
+		to {
+		text-shadow: 0 0 55px #e827e8, 0 0 50px #e827e8, 0 0 45px #B760B5, 0 0 40px #B760B5, 0 0 35px #B760B5, 0 0 20px #fff;
+		}
 		}
