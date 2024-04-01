@@ -60,9 +60,9 @@
 		-webkit-text-fill-color: transparent;
 		text-fill-color: transparent;
 		background-size: 200% auto;
-		animation: rnbanim 10s ease-in-out infinite alternate;
-		-moz-animation: rnbanim 10s ease-in-out infinite alternate;
-		-webkit-animation: rnbanim 10s ease-in-out infinite alternate;
+		animation: rnbanim 5s ease-in-out infinite alternate;
+		-moz-animation: rnbanim 5s ease-in-out infinite alternate;
+		-webkit-animation: rnbanim 5s ease-in-out infinite alternate;
 		}
 		@keyframes rnbanim {
 		0% { background-position: 0% 50%; 
