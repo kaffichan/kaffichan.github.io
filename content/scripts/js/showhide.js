@@ -1,5 +1,5 @@
-	$(function() {
-		$( "#button" ).click(function() {
-			$( "#item" ).toggle();
-		});
+$(function() {
+	$("#button").click(function() {
+		$("#item").toggle();
 	});
+});
