@@ -1,5 +1,5 @@
 $(function() {
 	$("#button").click(function() {
-		$("#item").toggle();
+		$("#mainDiv").toggle();
 	});
 });
