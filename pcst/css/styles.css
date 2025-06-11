@@ -1,0 +1,190 @@
+ html {
+  scroll-behavior: smooth;
+}
+
+ body {
+ font-family: Arial, sans-serif;
+ margin: 0;
+ padding: 0;
+ background-image: linear-gradient(120deg, #001f3f, #005f9e, #318ad4);
+ background-size: 100% 100%;
+ animation: grBG 5s ease infinite;
+ -webkit-animation: grBG 5s ease infinite;
+ -moz-animation: grBG 5s ease infinite;
+}
+
+@keyframes grBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+header {
+ background-color: rgba(255,255,255,0.2);
+ color: #fff;
+ padding:1em;
+ text-align: center;
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ z-index: 100;
+}
+
+footer {
+ background-color: rgba(255,255,255,0.2);
+ color: #fff;
+ padding:1em;
+ text-align: center;
+}
+
+nav ul {
+ list-style: none;
+ margin:0;
+ padding:0;
+ display: flex;
+ justify-content: space-around;
+}
+
+nav a {
+ color: #fff;
+ text-decoration: none;
+ transition: color 0.2s ease;
+}
+
+main {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ padding:2em;
+ padding-top: 80px;
+}
+
+section {
+ background-color: #003057;
+ padding:1em;
+ margin-bottom:1em;
+ box-shadow:10px rgba(0,0,0,0.1);
+ border-radius: 15px;
+ border: 3px solid #185B9A;
+}
+
+h1 {
+ font-family: "Open Sans", sans-serif;
+ font-weight: bold;
+ font-size:36px;
+ margin-top:0;
+ color: #C5D6E5;
+}
+
+h2 {
+ font-family: "Open Sans", sans-serif;
+ font-weight: bold;
+ font-size:24px;
+ margin-top:0;
+ color: #C5D6E5;
+}
+
+p {
+ font-family: "Lato", sans-serif;
+ font-size:18px;
+ color: #8BADCC;
+}
+
+.image-block {
+ margin: 1em auto;
+ text-align: center;
+}
+
+.image-block img {
+ width:100%;
+ height: auto;
+ border-radius:10px;
+ box-shadow:0010px rgba(0,0,0,0.1);
+}
+
+.imgfly {
+  animation: floatAnimation 3s ease-in-out infinite;
+}
+
+.imgflyN {
+  animation: floatAnimationN 3s ease-in-out infinite;
+}
+
+@keyframes floatAnimation {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes floatAnimationN {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+.btmhding {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+}
+
+.hall-of-fame {
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.hall-of-fame-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.hall-of-fame-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+	justify-items: center;
+}
+
+.hall-of-fame-item .name {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.hall-of-fame-item .role {
+    display: block;
+    font-style: italic;
+}
+
+
+@media (max-width: 1150px) {
+    .hall-of-fame-grid {
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .hall-of-fame-grid {
+        grid-template-columns: 1fr;
+    }
+}
