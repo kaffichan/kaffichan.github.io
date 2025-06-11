@@ -23,7 +23,16 @@
 		.sideblock {
 		background-color: #522d80;
 		border-radius: 0 15px 15px 0;
-		border: 3px solid #32174d;
+		border-right: 3px solid #32174d;
+		border-top: 3px solid #32174d;
+		border-bottom: 3px solid #32174d;
+		}
+		.extSite {
+		background-color: #522d80;
+		border-radius: 15px 0 0 15px;
+		border-left: 3px solid #32174d;
+		border-top: 3px solid #32174d;
+		border-bottom: 3px solid #32174d;
 		}
 		.centerblock {
 		background-color: #20122E;
