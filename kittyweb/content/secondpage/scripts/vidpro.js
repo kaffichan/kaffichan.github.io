@@ -36,8 +36,17 @@ $(document).ready(function() {
 	$(window).on('resize scroll', checkVisible);
 	
 	$('.video-block video').on('loadeddata', function() {
-		$(this).closest('.video-block').addClass('loaded');
+		var $videoBlock = $(this).closest('.video-block');
+		$videoBlock.addClass('loaded');
+		
+		var videoWidth = this.videoWidth;
+		var videoHeight = this.videoHeight;
+		
+		$videoBlock.find('.video-loading').width(videoWidth).height(videoHeight);
+		
 		$('.video-container').isotope('layout');
+		
+		$(window).trigger('resize');
 	});
 	
 	$('.video-block video').on('error', function() {
@@ -45,6 +54,7 @@ $(document).ready(function() {
 		$(this).closest('.video-block').addClass('loaded');
 		$(this).replaceWith('<p style="color: #FFD9FF; text-align: center;">Ошибка загрузки</p>');
 		$('.video-container').isotope('layout');
+		$(window).trigger('resize');
 	});
 	
 	function triggerResize() {
