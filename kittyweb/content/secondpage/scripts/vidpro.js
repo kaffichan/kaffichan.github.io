@@ -6,6 +6,13 @@ $(document).ready(function() {
 		if (source) {
 			video.attr('src', source);
 			video.removeAttr('data-src');
+			
+			video.on('canplaythrough', function() {
+				this.play().catch(function(error) {
+					console.log("Autoplay prevented: ", error);
+				});
+			});
+			
 			setTimeout(function() {
 				video[0].load();
 			}, 50);
