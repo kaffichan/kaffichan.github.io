@@ -8,20 +8,16 @@ title: 📁 Архив
 
 {% assign all_files = site.static_files | sort: "path" %}
 
-<ul>
+<ul class="file-tree-root">
 {% assign current_dir = "/" %}
 {% assign base_folder = "archive/" %} 
 
 {% for file in all_files %}
 
-  {% comment %}
-    1. Проверка: Файл должен содержать "archive/"
-  {% endcomment %}
+  {% comment %} 1. Проверка: Файл должен содержать "archive/" {% endcomment %}
   {% if file.path contains base_folder %}
     
-    {% comment %} 
-      2. Исключаем служебные файлы Jekyll и GitHub. 
-    {% endcomment %}
+    {% comment %} 2. Исключаем служебные файлы {% endcomment %}
     {% assign excluded_names = "index.html,README.md,.nojekyll,.git,_config.yml,.DS_store" | split: "," %}
     {% assign skip_name = false %}
     {% for name in excluded_names %}
@@ -32,20 +28,14 @@ title: 📁 Архив
     
     {% unless skip_name %}
 
-      {% comment %} 
-        3. Обрезаем путь.
-        Пример: /archive/folder/file.txt -> folder/file.txt
-      {% endcomment %}
+      {% comment %} 3. Обрезаем путь: /archive/folder/file.txt -> folder/file.txt {% endcomment %}
       {% assign path_without_leading_slash = file.path | remove_first: "/" %} 
       {% assign file_path_relative = path_without_leading_slash | remove_first: base_folder %} 
       
       {% comment %} 4. Определяем директорию файла (например, "subfolder/") {% endcomment %}
       {% assign file_dir = file_path_relative | remove_last: file.name %} 
       
-      {% comment %} 
-        5. Логика для создания иерархии папок 
-        Если file_dir пуст, это корень архива, который мы обозначаем как "/".
-      {% endcomment %}
+      {% comment %} 5. Логика для создания иерархии папок {% endcomment %}
       {% if file_dir == "" %} 
         {% assign next_dir = "/" %} 
       {% else %}
@@ -54,13 +44,15 @@ title: 📁 Архив
 
       {% if next_dir != current_dir %}
         {% if current_dir != "/" %}
-          </ul></li>{% comment %} Закрываем предыдущую папку, если она была {% endcomment %}
+          </ul></li>{% comment %} Закрываем предыдущую папку {% endcomment %}
         {% endif %}
 
         {% if next_dir != "/" %}
-          {% comment %} Открываем новую папку {% endcomment %}
+          {% comment %} Открываем новую папку: Убрал ** и добавил класс folder-entry {% endcomment %}
           {% assign folder_name = next_dir | remove_last: "/" %}
-          <li class="folder">**[{{ folder_name }}]**<ul>
+          <li class="folder-entry">
+            <span class="folder-name">📁 {{ folder_name }}</span>
+            <ul>
           {% assign current_dir = next_dir %}
         {% else %}
           {% comment %} Возвращаемся в корень архива {% endcomment %}
@@ -68,17 +60,17 @@ title: 📁 Архив
         {% endif %}
       {% endif %}
 
-      {% comment %} 6. Выводим ссылку на сам файл {% endcomment %}
-      <li class="file"><a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
+      {% comment %} 6. Выводим ссылку на сам файл: Убрал class="file" и добавил file-entry {% endcomment %}
+      {% unless next_dir == "/" and current_dir == "/" %}
+        <li class="file-entry"><a href="{{ file.path | relative_url }}" download>📄 {{ file.name }}</a></li>
+      {% endunless %}
 
     {% endunless %}
   {% endif %}
 
 {% endfor %}
 
-{% comment %} 
-  Закрываем последний открытый список, если мы не в корне.
-{% endcomment %}
+{% comment %} Закрываем последний открытый список {% endcomment %}
 {% if current_dir != "/" %}
   </ul></li> 
 {% endif %}
