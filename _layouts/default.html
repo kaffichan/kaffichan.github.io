@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .archive-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
+        h1 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        ul { list-style: none; padding-left: 20px; }
+        li { margin-bottom: 5px; }
+        a { text-decoration: none; color: #0366d6; }
+        a:hover { text-decoration: underline; }
+        .folder { font-weight: bold; color: #4078c0; }
+        .file { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="archive-container">
+        {{ content }}
+    </div>
+</body>
+</html>
