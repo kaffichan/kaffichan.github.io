@@ -1,0 +1,78 @@
+---
+layout: default
+title: 📁 Архив
+---
+<h1>{{ page.title }}</h1>
+
+<p>Хранилище проектов, скриптов, задач и работ.</p>
+
+{% assign all_files = site.static_files | sort: "path" %}
+
+<ul class="file-tree-root">
+{% assign current_dir = "/" %}
+{% assign base_folder = "archive/" %} 
+
+{% for file in all_files %}
+
+  {% comment %} 1. Фильтр: Файл должен содержать "archive/" {% endcomment %}
+  {% if file.path contains base_folder %}
+    
+    {% comment %} 2. Исключаем служебные файлы {% endcomment %}
+    {% assign excluded_names = "index.html,README.md,.nojekyll,.git,_config.yml,.DS_store" | split: "," %}
+    {% assign skip_name = false %}
+    {% for name in excluded_names %}
+      {% if file.name == name %}
+        {% assign skip_name = true %}
+      {% endif %}
+    {% endfor %}
+    
+    {% unless skip_name %}
+
+      {% comment %} 3. Обрезаем путь: /archive/folder/file.txt -> folder/file.txt {% endcomment %}
+      {% assign path_without_leading_slash = file.path | remove_first: "/" %} 
+      {% assign file_path_relative = path_without_leading_slash | remove_first: base_folder %} 
+      
+      {% comment %} 4. Определяем директорию файла (например, "subfolder/") {% endcomment %}
+      {% assign file_dir = file_path_relative | remove_last: file.name %} 
+      
+      {% comment %} 5. Логика для создания иерархии папок {% endcomment %}
+      {% if file_dir == "" %} 
+        {% assign next_dir = "/" %} 
+      {% else %}
+        {% assign next_dir = file_dir %}
+      {% endif %}
+
+      {% if next_dir != current_dir %}
+        {% if current_dir != "/" %}
+          </ul></li>{% comment %} Закрываем предыдущую папку {% endcomment %}
+        {% endif %}
+
+        {% if next_dir != "/" %}
+          {% comment %} ОТКРЫТИЕ ПАПКИ: Используем классы для JS/CSS {% endcomment %}
+          {% assign folder_name = next_dir | remove_last: "/" %}
+          <li class="folder-entry">
+            <span class="folder-name"><span class="toggler">[+]</span> 📁 {{ folder_name }}</span>
+            <ul class="folder-content collapsed">
+          {% assign current_dir = next_dir %}
+        {% else %}
+          {% comment %} Возвращаемся в корень архива {% endcomment %}
+          {% assign current_dir = "/" %}
+        {% endif %}
+      {% endif %}
+
+      {% comment %} 
+        6. ВЫВОД ФАЙЛА: Обрезаем префикс папки (file_dir) из file_path_relative перед отображением.
+      {% endcomment %}
+      {% assign display_file_name = file_path_relative | remove_first: file_dir %}
+      <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ display_file_name }}</a></li>
+
+    {% endunless %}
+  {% endif %}
+
+{% endfor %}
+
+{% comment %} Закрываем последний открытый список {% endcomment %}
+{% if current_dir != "/" %}
+  </ul></li> 
+{% endif %}
+</ul>
