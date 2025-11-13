@@ -8,12 +8,44 @@
         body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
         .archive-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
         h1 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        ul { list-style: none; padding-left: 20px; }
-        li { margin-bottom: 5px; }
-        a { text-decoration: none; color: #0366d6; }
-        a:hover { text-decoration: underline; }
         .folder { font-weight: bold; color: #4078c0; }
         .file { color: #333; }
+                /* Убираем стандартные маркеры и делаем отступы */
+        ul { 
+            list-style: none; 
+            padding-left: 20px; /* Отступ для вложенности */
+        }
+        li { 
+            margin-bottom: 5px; 
+        }
+        
+        /* Стили для элементов дерева */
+        .file-tree-root {
+            padding-left: 0; /* Корневой список без отступа */
+        }
+        
+        /* Стили для папок (li.folder-entry содержит span (название) и ul (вложенные элементы)) */
+        .folder-entry > .folder-name {
+            display: block;
+            cursor: default;
+            font-weight: bold;
+            color: #4078c0;
+            margin-bottom: 3px;
+            padding-left: 0; /* Добавьте отступ, если хотите */
+        }
+        
+        /* Стили для файлов */
+        .file-entry a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            padding-left: 5px; /* Небольшой отступ, чтобы выделить файл от названия папки */
+        }
+        
+        .file-entry a:hover {
+            text-decoration: underline;
+            color: #0366d6;
+        }
     </style>
 </head>
 <body>
