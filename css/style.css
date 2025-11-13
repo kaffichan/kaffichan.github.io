@@ -45,24 +45,64 @@ a:hover {
     cursor: pointer; /* Для кликабельности */
     margin-bottom: 3px;
 }
-/* Стиль для тогглера [+] / [-] */
+/* --- Стили для ИКОНОК [+] / [-] (toggler) --- */
 .toggler {
-    font-size: 1.1em;
-    width: 15px;
-    text-align: center;
+    font-size: 0; /* Делаем текст [+] / [-] невидимым */
+    width: 20px; /* Размер иконки */
+    height: 20px; /* Размер иконки */
+    display: block; 
     margin-right: 5px;
-    color: #666;
-    user-select: none; /* Предотвратить выделение текста */
+    user-select: none;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
+/* Иконка [+] (Папка закрыта) */
+.folder-entry.collapsed-icon .toggler {
+    background-image: url('/img/plus-circle.svg');
+}
+/* Иконка [-] (Папка открыта) */
+.folder-entry.expanded .toggler {
+    background-image: url('/img/minus-circle.svg');
+}
+/* --- Замена иконки Папки (📁) --- */
+.folder-name {
+    color: #4078c0;
+}
+.folder-name::after {
+    content: none;
+    margin-left: 5px; 
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-image: url('/img/folder.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+/* Скрытие содержимого папки */
 .folder-content.collapsed {
     display: none;
 }
+/* --- Стили для Файлов --- */
 .file-entry a {
     color: #333;
 }
 .file-entry a:hover {
     color: #0366d6;
 }
+/* Замена иконки Файла (📄) */
+.file-entry::before {
+    content: none;
+    margin-right: 5px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url('/img/file.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle; /* Для выравнивания по вертикали */
+}
+/* --- Стили для footer --- */
 .fixed-footer {
     position: fixed; 
     bottom: 0;      
@@ -72,14 +112,15 @@ a:hover {
     color: #fff;            /* Светлый текст */
     padding: 10px 0;
     text-align: center;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.2); /* Тень сверху */
-    z-index: 100; /* Гарантируем, что он поверх всего */
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2); /* Тень */
+    z-index: 100;
 }
+/* Изменение цвета ССЫЛОК внутри footer */
 .fixed-footer a {
-    color: #4078c0; /* Цвет ссылки */
+    color: #ff9900; /* <-- Новый цвет ссылок в footer */
 }
 .fixed-footer a:hover {
-    color: #fff;
+    color: #fff; /* Цвет при наведении */
 }
 .fixed-footer .separator {
     margin: 0 10px;

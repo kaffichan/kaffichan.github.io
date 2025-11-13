@@ -61,7 +61,7 @@ title: 📁 Архив
             {% comment %} ОТКРЫТИЕ ПАПКИ: Используем классы для JS/CSS {% endcomment %}
             {% assign folder_name = part %}
             <li class="folder-entry">
-              <span class="folder-name"><span class="toggler">[+]</span> 📁 {{ folder_name }}</span>
+              <span class="folder-name"><span class="toggler"></span> {{ folder_name }}</span>
               <ul class="folder-content collapsed">
               
               {% comment %} Обновляем текущий путь {% endcomment %}
@@ -75,7 +75,7 @@ title: 📁 Архив
 
       
       {% comment %} 6. ВЫВОД ФАЙЛА: Используем file.name {% endcomment %}
-      <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
+      <li class="file-entry"> <a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
 
     {% endunless %}
   {% endif %}
