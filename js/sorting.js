@@ -1,36 +1,39 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Функция-обработчик клика
-    function toggleFolder(folderNameSpan) {
-        const folderEntryLi = folderNameSpan.closest('.folder-entry');
-        const folderContentUl = folderEntryLi.querySelector('.folder-content');
-        const togglerSpan = folderNameSpan.querySelector('.toggler');
-
-        if (folderContentUl && togglerSpan) {
-            // Переключаем класс для скрытия/отображения
-            folderContentUl.classList.toggle('collapsed');
-            
-            // Обновляем символ тогглера и класс
-            if (folderContentUl.classList.contains('collapsed')) {
-                togglerSpan.textContent = '[+]';
-                folderEntryLi.classList.add('expanded');
-            } else {
-                togglerSpan.textContent = '[-]';
-                folderEntryLi.classList.remove('expanded');
-            }
-        }
-    }
-
-    // 2. Используем делегирование событий
+    
+    // Используем делегирование событий на корневом элементе
     const fileTreeRoot = document.querySelector('.file-tree-root');
 
     if (fileTreeRoot) {
         fileTreeRoot.addEventListener('click', function(event) {
-            // Проверяем, был ли клик по элементу с классом .folder-name
-            const folderNameElement = event.target.closest('.folder-name');
             
-            if (folderNameElement) {
-                // Если да, вызываем нашу функцию toggleFolder, передавая найденный элемент
-                toggleFolder(folderNameElement);
+            // Ищем элемент, который должен быть кликабельным: <span class="folder-name">
+            const folderNameSpan = event.target.closest('.folder-name');
+            
+            if (folderNameSpan) {
+                // Если клик был на названии папки (или внутри него),
+                // находим все связанные элементы:
+                
+                const folderEntryLi = folderNameSpan.closest('.folder-entry');
+                // Контент папки - это следующий элемент <ul>
+                const folderContentUl = folderEntryLi.querySelector('.folder-content');
+                // Тогглер - это элемент внутри названия папки
+                const togglerSpan = folderNameSpan.querySelector('.toggler');
+
+                // Убедимся, что все элементы найдены, прежде чем что-то менять
+                if (folderContentUl && togglerSpan) {
+                    
+                    // 1. Переключаем класс для скрытия/отображения
+                    folderContentUl.classList.toggle('collapsed');
+                    
+                    // 2. Обновляем символ тогглера и класс родительского LI
+                    if (folderContentUl.classList.contains('collapsed')) {
+                        togglerSpan.textContent = '[+]';
+                        folderEntryLi.classList.remove('expanded');
+                    } else {
+                        togglerSpan.textContent = '[-]';
+                        folderEntryLi.classList.add('expanded');
+                    }
+                }
             }
         });
     }
