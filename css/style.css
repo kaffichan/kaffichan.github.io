@@ -45,97 +45,82 @@ a:hover {
     cursor: pointer; /* Для кликабельности */
     margin-bottom: 3px;
 }
-/* --- Стили для ИКОНОК [+] / [-] (toggler) --- */
+/* Стиль для тогглера [+] / [-] */
 .toggler {
-    font-size: 0; /* Делаем текст [+] / [-] невидимым */
-    width: 20px; /* Размер иконки */
-    height: 20px; /* Размер иконки */
-    display: block; 
+    font-size: 1.1em;
+    width: 15px;
+    text-align: center;
     margin-right: 5px;
-    user-select: none;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    color: #666;
+    user-select: none; /* Предотвратить выделение текста */
 }
-/* Иконка [+] (Папка закрыта) */
-.folder-entry.collapsed-icon .toggler {
-    background-image: url('/img/plus-circle.svg');
-}
-/* Иконка [-] (Папка открыта) */
-.folder-entry.expanded .toggler {
-    background-image: url('/img/minus-circle.svg');
-}
-/* --- Замена иконки Папки (📁) --- */
-.folder-name {
-    /* Удаляем эмодзи '📁' из HTML (если он там остался) */
-    /* и добавляем иконку через CSS */
-    display: flex; /* Важно, чтобы иконка была рядом с текстом */
-    align-items: center;
-}
-.folder-name::after {
-    content: ''; /* Используем пустой content для вставки иконки */
-    margin-left: 5px; 
-    display: block;
-    width: 20px;
-    height: 20px;
-    background-image: url('/img/folder.svg'); /* <-- УБЕДИТЕСЬ, что этот путь верен */
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-/* --- Замена иконки Файла (📄) --- */
-.file-entry::before {
-    content: ''; /* Используем пустой content для вставки иконки */
-    margin-right: 5px;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background-image: url('/img/file.svg'); /* <-- УБЕДИТЕСЬ, что этот путь верен */
-    background-size: contain;
-    background-repeat: no-repeat;
-    vertical-align: middle; 
-}
-/* Скрытие содержимого папки */
 .folder-content.collapsed {
     display: none;
 }
-/* --- Стили для Файлов --- */
 .file-entry a {
     color: #333;
 }
 .file-entry a:hover {
     color: #0366d6;
 }
-/* Замена иконки Файла (📄) */
-.file-entry::before {
-    content: none;
-    margin-right: 5px;
+
+/* --- ЗАМЕНА ЭМОДЗИ ПАПКИ (📁) на ИЗОБРАЖЕНИЕ --- */
+.folder-name {
+    /* Чтобы расположить иконку, [+][-], и название в ряд */
+    display: flex; 
+    align-items: center;
+}
+.folder-name::before {
+    /* Это наш контейнер для иконки папки */
+    content: '';
     display: inline-block;
-    width: 20px;
+    width: 20px; /* Размер иконки */
     height: 20px;
-    background-image: url('/img/file.svg');
+    margin-right: 5px;
+    background-image: url('/img/folder.svg'); /* <-- ПРОВЕРЬТЕ ПУТЬ */
     background-size: contain;
     background-repeat: no-repeat;
-    vertical-align: middle; /* Для выравнивания по вертикали */
+    vertical-align: middle;
 }
-/* --- Стили для footer --- */
+/* Скрываем эмодзи 📁 в index.html (используйте CSS-селектор для скрытия эмодзи,
+    если он остается в HTML, или просто удалите его из index.html) */
+
+/* --- ЗАМЕНА ЭМОДЗИ ФАЙЛА (📄) на ИЗОБРАЖЕНИЕ --- */
+.file-entry {
+    /* Добавляем иконку файла перед ссылкой */
+    list-style: none; /* Убираем стандартные маркеры списка */
+}
+.file-entry::before {
+    content: ''; /* Вставляем псевдоэлемент для иконки */
+    display: inline-block;
+    width: 20px; /* Размер иконки */
+    height: 20px;
+    margin-right: 5px;
+    background-image: url('/img/file.svg'); /* <-- ПРОВЕРЬТЕ ПУТЬ */
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+
+/* --- Стили для Футера (ЦВЕТ ССЫЛОК) --- */
 .fixed-footer {
     position: fixed; 
     bottom: 0;      
     left: 0;
     width: 100%;
-    background-color: #333; /* Темный фон */
-    color: #fff;            /* Светлый текст */
+    background-color: #333; 
+    color: #fff;            
     padding: 10px 0;
     text-align: center;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.2); /* Тень */
-    z-index: 100;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2); 
+    z-index: 100; 
 }
-/* Изменение цвета ССЫЛОК внутри footer */
+/* ИЗМЕНЕНИЕ ЦВЕТА ССЫЛОК ВНУТРИ ФУТЕРА */
 .fixed-footer a {
-    color: #ff9900; /* <-- Новый цвет ссылок в footer */
+    color: #ff9900; /* <-- Новый цвет, например, оранжевый (заменяет #4078c0) */
 }
 .fixed-footer a:hover {
-    color: #fff; /* Цвет при наведении */
+    color: #fff;
 }
 .fixed-footer .separator {
     margin: 0 10px;
