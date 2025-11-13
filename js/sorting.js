@@ -1,33 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Функция для обработки клика по тогглеру
     function toggleFolder(event) {
         const folderNameSpan = event.currentTarget;
         const folderEntryLi = folderNameSpan.closest('.folder-entry');
         const folderContentUl = folderEntryLi.querySelector('.folder-content');
-        // Убрали const togglerSpan - он нам не нужен
+        const togglerSpan = folderNameSpan.querySelector('.toggler');
 
         if (folderContentUl) {
+            // Переключаем класс для скрытия/отображения
             folderContentUl.classList.toggle('collapsed');
             
-            // Вместо изменения текста тогглера, меняем класс на li:
+            // Обновляем символ тогглера
             if (folderContentUl.classList.contains('collapsed')) {
+                togglerSpan.textContent = '[+]';
                 folderEntryLi.classList.remove('expanded');
-                // Добавляем класс для закрытой папки, чтобы CSS мог применить иконку [+]
-                folderEntryLi.classList.add('collapsed-icon'); 
             } else {
+                togglerSpan.textContent = '[-]';
                 folderEntryLi.classList.add('expanded');
-                // Убираем класс закрытой папки, чтобы CSS мог применить иконку [-]
-                folderEntryLi.classList.remove('collapsed-icon');
             }
         }
     }
 
+    // Находим все элементы с названием папки и прикрепляем обработчик
     const folderNames = document.querySelectorAll('.folder-name');
     folderNames.forEach(name => {
         name.addEventListener('click', toggleFolder);
-    });
-    
-    // Инициализация: убедимся, что все папки начинаются с иконкой [+]
-    document.querySelectorAll('.folder-entry').forEach(li => {
-        li.classList.add('collapsed-icon');
     });
 });
