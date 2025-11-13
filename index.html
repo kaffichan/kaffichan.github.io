@@ -103,7 +103,7 @@ title: 📁 Архив
   {% endif %}
 {% endfor %}
 
-{% comment %} 7. Закрываем все оставшиеся открытые папки {% endcomment %}
+{% comment %} 7. Закрываем все оставшиеся открытые папки. {% endcomment %}
 {% assign current_path_parts = current_path_string | split: "/" %}
 {% assign current_path_parts_filtered = "" | split: ',' %}
 {% for part in current_path_parts %}
