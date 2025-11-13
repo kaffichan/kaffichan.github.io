@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const folderContentUl = folderEntryLi.querySelector('.folder-content');
         const togglerSpan = folderNameSpan.querySelector('.toggler');
 
-        if (folderContentUlс && togglerSpan) {
+        if (folderContentUl && togglerSpan) {
             // Переключаем класс для скрытия/отображения
             folderContentUl.classList.toggle('collapsed');
             
