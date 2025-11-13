@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Обновляем символ тогглера и класс
             if (folderContentUl.classList.contains('collapsed')) {
                 togglerSpan.textContent = '[+]';
-                folderEntryLi.classList.remove('expanded');
+                folderEntryLi.classList.add('expanded');
             } else {
                 togglerSpan.textContent = '[-]';
-                folderEntryLi.classList.add('expanded');
+                folderEntryLi.classList.remove('expanded');
             }
         }
     }
