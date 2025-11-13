@@ -1,4 +1,4 @@
 # _config.yml
+remote_theme: jekyll/minima
 title: Архив
 description: Автоматический индекс каталога
-theme: minima
