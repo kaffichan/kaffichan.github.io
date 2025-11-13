@@ -14,7 +14,7 @@ title: 📁 Архив
 
 {% for file in all_files %}
 
-  {% comment %} 1. Проверка: Файл должен содержать "archive/" {% endcomment %}
+  {% comment %} 1. Фильтр: Файл должен содержать "archive/" {% endcomment %}
   {% if file.path contains base_folder %}
     
     {% comment %} 2. Исключаем служебные файлы {% endcomment %}
@@ -44,11 +44,11 @@ title: 📁 Архив
 
       {% if next_dir != current_dir %}
         {% if current_dir != "/" %}
-          </ul></li>{% comment %} Закрываем предыдущую папку, если она была {% endcomment %}
+          </ul></li>{% comment %} Закрываем предыдущую папку {% endcomment %}
         {% endif %}
 
         {% if next_dir != "/" %}
-          {% comment %} ОТКРЫТИЕ ПАПКИ: Создаем новый элемент папки с классом toggler {% endcomment %}
+          {% comment %} ОТКРЫТИЕ ПАПКИ: Используем классы для JS/CSS {% endcomment %}
           {% assign folder_name = next_dir | remove_last: "/" %}
           <li class="folder-entry">
             <span class="folder-name"><span class="toggler">[+]</span> 📁 {{ folder_name }}</span>
@@ -61,11 +61,10 @@ title: 📁 Архив
       {% endif %}
 
       {% comment %} 
-        6. ВЫВОД ФАЙЛА: Файл выводится как обычный элемент списка.
-        Если next_dir != "/", файл выводится внутри открытой папки.
-        Если next_dir == "/", файл выводится в корневом списке.
+        6. ВЫВОД ФАЙЛА: Обрезаем префикс папки (file_dir) из file_path_relative перед отображением.
       {% endcomment %}
-      <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
+      {% assign display_file_name = file_path_relative | remove_first: file_dir %}
+      <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ display_file_name }}</a></li>
 
     {% endunless %}
   {% endif %}
