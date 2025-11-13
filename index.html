@@ -30,55 +30,64 @@ title: 📁 Архив
     
     {% unless skip_name %}
 
-      {% comment %} 3. Определяем путь и части {% endcomment %}
+      {% comment %} 3. Определяем путь к папке файла и части (ИСПРАВЛЕНО) {% endcomment %}
       {% assign path_without_leading_slash = file.path | remove_first: "/" %} 
       {% assign file_path_relative = path_without_leading_slash | remove_first: base_folder %} 
       
-      {% comment %} Путь к папке файла (например, py/semtask/) {% endcomment %}
-      {% assign file_dir_path = file_path_relative | remove: file.name %} 
-      
-      {% comment %} 4. ЛОГИКА ЗАКРЫТИЯ ПАПОК (Поднимаемся на уровень выше или меняем ветку) {% endcomment %}
-      {% if file_dir_path != current_path_string %}
-        
-        {% assign new_path_parts = file_dir_path | split: "/" %}
-        {% assign current_path_parts = current_path_string | split: "/" %}
-        
-        {% comment %} Фильтруем пустые элементы в массиве для корректного подсчета глубины {% endcomment %}
-        {% assign current_path_parts_filtered = "" | split: ',' %}
-        {% for part in current_path_parts %}
-            {% if part != "" %}
-                {% assign current_path_parts_filtered = current_path_parts_filtered | push: part %}
-            {% endif %}
-        {% endfor %}
-        {% assign current_path_parts = current_path_parts_filtered %}
-
-        {% comment %} Находим общую глубину {% endcomment %}
-        {% assign common_depth = 0 %}
-        {% for i in (0..current_path_parts.size) %}
-            {% if current_path_parts[i] == new_path_parts[i] and current_path_parts[i] != nil %}
-                {% assign common_depth = common_depth | plus: 1 %}
-            {% else %}
-                {% break %}
-            {% endif %}
-        {% endfor %}
-
-        {% comment %} Закрываем лишние папки {% endcomment %}
-        {% assign num_to_close = current_path_parts.size | minus: common_depth %}
-        {% for i in (1..num_to_close) %}
-            </ul></li>{% comment %} Закрываем </ul> и <li> {% endcomment %}
-        {% endfor %}
-        
+      {% comment %} Извлекаем путь к папке файла. Если в пути нет '/', то файл в корне archive/. {% endcomment %}
+      {% if file_path_relative contains "/" %}
+          {% assign file_path_parts = file_path_relative | split: "/" %}
+          {% comment %} Убираем последний элемент (имя файла) {% endcomment %}
+          {% assign file_path_parts_count = file_path_parts.size | minus: 1 %}
+          {% assign file_dir_path = file_path_parts | slice: 0, file_path_parts_count | join: "/" | append: "/" %} 
+      {% else %}
+          {% comment %} Файл находится прямо в archive/ {% endcomment %}
+          {% assign file_dir_path = "" %}
       {% endif %}
 
+      {% comment %} Части текущего и нового пути (для Шага 4/5) {% endcomment %}
+      {% assign current_path_parts = current_path_string | split: "/" %}
+      {% assign new_path_parts = file_dir_path | split: "/" %}
+      
+      {% comment %} 4. Закрытие лишних папок: Находим, какой префикс пути совпадает {% endcomment %}
+      {% assign shared_prefix = "" %}
+      {% assign shared_parts_count = 0 %}
 
-      {% comment %} 5. ЛОГИКА ОТКРЫТИЯ ПАПОК (Углубляемся) {% endcomment %}
+      {% for part_index in (0..current_path_parts.size) %}
+        {% assign current_part = current_path_parts[part_index] %}
+        {% assign new_part = new_path_parts[part_index] %}
+
+        {% if current_part != nil and new_part != nil and current_part == new_part and current_part != "" %}
+          {% assign shared_prefix = shared_prefix | append: current_part | append: "/" %}
+          {% assign shared_parts_count = shared_parts_count | plus: 1 %}
+        {% else %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+
+      {% comment %} Закрываем все папки, кроме тех, что в shared_prefix {% endcomment %}
+      {% assign current_path_parts_filtered = "" | split: ',' %}
+      {% for part in current_path_parts %}{% if part != "" %}{% assign current_path_parts_filtered = current_path_parts_filtered | push: part %}{% endif %}{% endfor %}
+      
+      {% assign folders_to_close = current_path_parts_filtered.size | minus: shared_parts_count %}
+      
+      {% for i in (1..folders_to_close) %}
+        {% comment %} Удаляем последнюю часть пути, чтобы обновить трекер {% endcomment %}
+        {% assign current_path_string_parts = current_path_string | split: "/" | pop %}
+        {% assign current_path_string = current_path_string_parts | join: "/" | append: "/" %}
+
+        {% if current_path_string == "/" %}{% assign current_path_string = "" %}{% endif %}
+
+        {% comment %} ЗАКРЫТИЕ ПАПКИ: Закрываем UL и LI {% endcomment %}
+              </ul> 
+            </li>
+      {% endfor %}
+
+
+      {% comment %} 5. Открытие новых папок {% endcomment %}
       {% if file_dir_path != current_path_string %}
-        
-        {% comment %} Открываем новые папки, которых нет в текущем пути {% endcomment %}
-        {% assign current_path_parts = current_path_string | split: "/" %}
-        {% assign new_path_parts = file_dir_path | split: "/" %}
 
-        {% for i in (current_path_parts.size..new_path_parts.size) %}
+        {% for i in (shared_parts_count..new_path_parts.size) %}
           {% assign part = new_path_parts[i] %}
           {% if part != nil and part != "" %}
 
@@ -111,8 +120,13 @@ title: 📁 Архив
         {% assign current_path_parts_filtered = current_path_parts_filtered | push: part %}
     {% endif %}
 {% endfor %}
-{% assign current_depth = current_path_parts_filtered | size %}
-{% for i in (1..current_depth) %}
-  </ul></li> 
+
+{% for i in (1..current_path_parts_filtered.size) %}
+    {% comment %} ЗАКРЫТИЕ ПАПКИ: Закрываем UL и LI {% endcomment %}
+          </ul> 
+        </li>
 {% endfor %}
+
 </ul>
+
+<script src="{{ '/js/sorting.js' | relative_url }}"></script>
