@@ -77,4 +77,20 @@ title: 📁 Архив
   </ul></li>{% comment %} Закрываем последнюю папку. {% endcomment %}
 {% endif %}
 
+<div class="post-content e-content" itemprop="articleBody">
+    <h2>Проверка файлов (Временный код)</h2>
+    {% assign all_files = site.static_files | sort: "path" %}
+    
+    {% if all_files.size > 0 %}
+        <p>Найдено файлов: {{ all_files.size }}</p>
+        <ul>
+        {% for file in all_files %}
+            <li>{{ file.path }} (Размер: {{ file.size }})</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Jekyll не видит статических файлов в этом репозитории.</p>
+    {% endif %}
+</div>
+
 </ul>
