@@ -48,11 +48,11 @@ title: 📁 Архив
         {% endif %}
 
         {% if next_dir != "/" %}
-          {% comment %} Открываем новую папку: Убрал ** и добавил класс folder-entry {% endcomment %}
+          {% comment %} Открываем новую папку: [Начальное состояние '[-]'] {% endcomment %}
           {% assign folder_name = next_dir | remove_last: "/" %}
-          <li class="folder-entry">
-            <span class="folder-name">📁 {{ folder_name }}</span>
-            <ul>
+          <li class="folder-entry expanded">
+            <span class="folder-name"><span class="toggler">[+]</span> 📁 {{ folder_name }}</span>
+            <ul class="folder-content collapsed">
           {% assign current_dir = next_dir %}
         {% else %}
           {% comment %} Возвращаемся в корень архива {% endcomment %}
@@ -60,10 +60,8 @@ title: 📁 Архив
         {% endif %}
       {% endif %}
 
-      {% comment %} 6. Выводим ссылку на сам файл: Убрал class="file" и добавил file-entry {% endcomment %}
-      {% unless next_dir == "/" and current_dir == "/" %}
-        <li class="file-entry"><a href="{{ file.path | relative_url }}" download>📄 {{ file.name }}</a></li>
-      {% endunless %}
+      {% comment %} 6. Выводим ссылку на сам файл: {% endcomment %}
+      <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
 
     {% endunless %}
   {% endif %}
