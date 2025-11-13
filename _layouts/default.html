@@ -1,99 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }}</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
-        .archive-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
-        h1 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        a { text-decoration: none; color: #0366d6; }
-        a:hover { text-decoration: underline; }
-
-        /* --- Стили для Древа Файлов --- */
-        .file-tree-root { 
-            list-style: none; 
-            padding-left: 0; 
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ page.title }}</title>
         
-        /* Стили для всех списков (вложенных) */
-        .file-tree-root ul {
-            list-style: none;
-            padding-left: 20px; /* Отступ для имитации иерархии */
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-        
-        /* Стиль для названия папки и тогглера */
-        .folder-name {
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            color: #4078c0;
-            cursor: pointer; /* Для кликабельности */
-            margin-bottom: 3px;
-        }
+        <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+    </head>
+    <body>
+        <div class="archive-container">
+            {{ content }}
+        </div>
 
-        /* Стиль для тогглера [+] / [-] */
-        .toggler {
-            font-size: 1.1em;
-            width: 15px;
-            text-align: center;
-            margin-right: 5px;
-            color: #666;
-            user-select: none; /* Предотвратить выделение текста */
-        }
-
-        /* Скрытие содержимого папки */
-        .folder-content.collapsed {
-            display: none;
-        }
-        
-        /* Стиль для файлов */
-        .file-entry a {
-            color: #333;
-        }
-        .file-entry a:hover {
-            color: #0366d6;
-        }
-    </style>
-</head>
-<body>
-    <div class="archive-container">
-        {{ content }}
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Функция для обработки клика по тогглеру
-            function toggleFolder(event) {
-                const folderNameSpan = event.currentTarget;
-                const folderEntryLi = folderNameSpan.closest('.folder-entry');
-                const folderContentUl = folderEntryLi.querySelector('.folder-content');
-                const togglerSpan = folderNameSpan.querySelector('.toggler');
-
-                if (folderContentUl) {
-                    // Переключаем класс для скрытия/отображения
-                    folderContentUl.classList.toggle('collapsed');
-                    
-                    // Обновляем символ тогглера
-                    if (folderContentUl.classList.contains('collapsed')) {
-                        togglerSpan.textContent = '[+]';
-                        folderEntryLi.classList.remove('expanded');
-                    } else {
-                        togglerSpan.textContent = '[-]';
-                        folderEntryLi.classList.add('expanded');
-                    }
-                }
-            }
-
-            // Находим все элементы с названием папки и прикрепляем обработчик
-            const folderNames = document.querySelectorAll('.folder-name');
-            folderNames.forEach(name => {
-                name.addEventListener('click', toggleFolder);
-            });
-        });
-    </script>
-</body>
+        <script src="{{ '/assets/script.js' | relative_url }}"></script>
+    </body>
 </html>

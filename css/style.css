@@ -1,0 +1,72 @@
+body { 
+    font-family: sans-serif; 
+    margin: 20px; 
+    background-color: #f4f4f4; 
+}
+.archive-container { 
+    background-color: #fff; 
+    padding: 20px; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    max-width: 800px; 
+    margin: auto; 
+}
+h1 { 
+    color: #333; 
+    border-bottom: 2px solid #eee; 
+    padding-bottom: 10px; 
+}
+a { 
+    text-decoration: none; 
+    color: #0366d6; 
+}
+a:hover { 
+    text-decoration: underline; 
+}
+
+/* --- Стили для Древа Файлов --- */
+.file-tree-root { 
+    list-style: none; 
+    padding-left: 0; 
+}
+
+/* Стили для всех списков (вложенных и корневого) */
+.file-tree-root ul {
+    list-style: none;
+    padding-left: 20px; /* Отступ для имитации иерархии */
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* Стиль для названия папки и тогглера */
+.folder-name {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    color: #4078c0;
+    cursor: pointer; /* Для кликабельности */
+    margin-bottom: 3px;
+}
+
+/* Стиль для тогглера [+] / [-] */
+.toggler {
+    font-size: 1.1em;
+    width: 15px;
+    text-align: center;
+    margin-right: 5px;
+    color: #666;
+    user-select: none; /* Предотвратить выделение текста */
+}
+
+/* Скрытие содержимого папки */
+.folder-content.collapsed {
+    display: none;
+}
+
+/* Стиль для файлов */
+.file-entry a {
+    color: #333;
+}
+.file-entry a:hover {
+    color: #0366d6;
+}
