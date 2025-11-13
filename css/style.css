@@ -44,6 +44,7 @@ a:hover {
     color: #4078c0;
     cursor: pointer; /* Для кликабельности */
     margin-bottom: 3px;
+    user-select: none;
 }
 /* Стиль для тогглера [+] / [-] */
 .toggler {
