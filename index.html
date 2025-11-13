@@ -9,7 +9,7 @@ title: 📁 Архив
 {% assign all_files = site.static_files | sort: "path" %}
 
 <ul class="file-tree-root">
-{% assign current_dir = "/" %}
+{% assign current_dir = "" %}  {% comment %} Инициализируем пустой строкой, чтобы корректно обработать первый файл в корне "/" {% endcomment %}
 {% assign base_folder = "archive/" %} 
 
 {% for file in all_files %}
@@ -43,8 +43,8 @@ title: 📁 Архив
       {% endif %}
 
       {% if next_dir != current_dir %}
-        {% if current_dir != "/" %}
-          </ul></li>{% comment %} Закрываем предыдущую папку {% endcomment %}
+        {% if current_dir != "" %}  {% comment %} Закрываем предыдущую папку, если она была открыта (не корень) {% endcomment %}
+          </ul></li>
         {% endif %}
 
         {% if next_dir != "/" %}
@@ -55,13 +55,18 @@ title: 📁 Архив
             <ul class="folder-content collapsed">
           {% assign current_dir = next_dir %}
         {% else %}
-          {% comment %} Возвращаемся в корень архива {% endcomment %}
+          {% comment %} Переходим в корень архива (файлы будут выведены в корневой <ul>) {% endcomment %}
           {% assign current_dir = "/" %}
         {% endif %}
       {% endif %}
 
-      {% comment %} 6. Выводим ссылку на сам файл: {% endcomment %}
-      <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
+      {% comment %} 6. Выводим ссылку на сам файл: Файлы в корне "archive/" выводятся в корневой <ul> {% endcomment %}
+      {% if next_dir == "/" %}
+        <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
+      {% else %}
+        {% comment %} Файлы в подпапках выводятся внутри ul.folder-content {% endcomment %}
+        <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
+      {% endif %}
 
     {% endunless %}
   {% endif %}
@@ -69,7 +74,7 @@ title: 📁 Архив
 {% endfor %}
 
 {% comment %} Закрываем последний открытый список {% endcomment %}
-{% if current_dir != "/" %}
+{% if current_dir != "/" and current_dir != "" %}
   </ul></li> 
 {% endif %}
 </ul>
