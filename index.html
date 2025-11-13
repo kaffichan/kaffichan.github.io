@@ -12,8 +12,11 @@ title: 📁 Архив
 {% assign current_dir = "/" %}
 {% assign base_folder = "archive/" %} 
 
-{% for file in all_files %}
+{% assign all_files = site.static_files | sort: "path" %}
+{% assign base_folder = "archive/" %} 
+{% assign current_path_parts = "" | split: ',' %}
 
+{% for file in all_files %}
   {% comment %} 1. Фильтр: Файл должен содержать "archive/" {% endcomment %}
   {% if file.path contains base_folder %}
     
@@ -32,43 +35,57 @@ title: 📁 Архив
       {% assign path_without_leading_slash = file.path | remove_first: "/" %} 
       {% assign file_path_relative = path_without_leading_slash | remove_first: base_folder %} 
       
-      {% comment %} 4. Определяем директорию файла (например, "subfolder/") {% endcomment %}
-      {% assign file_dir = file_path_relative | remove_last: file.name %} 
+      {% comment %} 4. Разбиваем путь на части: ["py", "script.py"] {% endcomment %}
+      {% assign file_path_parts = file_path_relative | split: "/" %}
+      {% assign file_dir_depth = file_path_parts | size | minus: 1 %}
       
-      {% comment %} 5. Логика для создания иерархии папок {% endcomment %}
-      {% if file_dir == "" %} 
-        {% assign next_dir = "/" %} 
-      {% else %}
-        {% assign next_dir = file_dir %}
+      
+      {% comment %} 5. ЛОГИКА ОТКРЫТИЯ/ЗАКРЫТИЯ ПАПОК {% endcomment %}
+      
+      {% comment %} A. Сначала ЗАКРЫВАЕМ папки, если мы поднимаемся на уровень выше или переходим в другую ветку {% endcomment %}
+      {% assign current_depth = current_path_parts | size %}
+      {% if file_dir_depth < current_depth %}
+        {% assign num_to_close = current_depth | minus: file_dir_depth %}
+        {% for i in (1..num_to_close) %}
+          </ul></li>{% comment %} Закрываем </ul> и <li> {% endcomment %}
+        {% endfor %}
+        {% assign current_path_parts = current_path_parts | slice: 0, file_dir_depth %}
       {% endif %}
-
-      {% if next_dir != current_dir %}
-        {% if current_dir != "/" %}
-          </ul></li>{% comment %} Закрываем предыдущую папку {% endcomment %}
-        {% endif %}
-
-        {% if next_dir != "/" %}
-          {% comment %} ОТКРЫТИЕ ПАПКИ: Используем классы для JS/CSS {% endcomment %}
-          {% assign folder_name = next_dir | remove_last: "/" %}
-          <li class="folder-entry">
-            <span class="folder-name"><span class="toggler">[+]</span> 📁 {{ folder_name }}</span>
-            <ul class="folder-content collapsed">
-          {% assign current_dir = next_dir %}
+      
+      {% comment %} B. Теперь ОТКРЫВАЕМ новые папки, если нужно углубиться {% endcomment %}
+      {% for i in (0..file_dir_depth) %}
+        {% assign part = file_path_parts[i] %}
+        {% if i < file_dir_depth %}
+          {% comment %} Это папка. Проверяем, открыта ли она уже {% endcomment %}
+          {% if current_path_parts[i] != part %}
+            {% comment %} ОТКРЫТИЕ ПАПКИ: Используем классы для JS/CSS {% endcomment %}
+            {% assign folder_name = part %}
+            <li class="folder-entry">
+              <span class="folder-name"><span class="toggler">[+]</span> 📁 {{ folder_name }}</span>
+              <ul class="folder-content collapsed">
+              
+              {% comment %} Обновляем текущий путь {% endcomment %}
+              {% assign current_path_parts = current_path_parts | slice: 0, i %} 
+              {% assign current_path_parts = current_path_parts | push: part %}
+          {% endif %}
         {% else %}
-          {% comment %} Возвращаемся в корень архива {% endcomment %}
-          {% assign current_dir = "/" %}
+          {% comment %} Это файл. Текущая папка уже открыта или мы в корне. {% endcomment %}
         {% endif %}
-      {% endif %}
+      {% endfor %}
 
-      {% comment %} 
-        6. ВЫВОД ФАЙЛА: Используем file.name для отображения только имени файла.
-      {% endcomment %}
-      {% assign display_file_name = file.name %}
-      <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ display_file_name }}</a></li>
+      
+      {% comment %} 6. ВЫВОД ФАЙЛА: Используем file.name {% endcomment %}
+      <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
 
     {% endunless %}
   {% endif %}
 
+{% endfor %}
+
+{% comment %} 7. Закрываем все оставшиеся открытые папки {% endcomment %}
+{% assign current_depth = current_path_parts | size %}
+{% for i in (1..current_depth) %}
+  </ul></li> 
 {% endfor %}
 
 {% comment %} Закрываем последний открытый список {% endcomment %}
