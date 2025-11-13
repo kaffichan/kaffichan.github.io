@@ -33,8 +33,8 @@ a:hover {
 .file-tree-root ul {
     list-style: none;
     padding-left: 20px; /* Отступ для имитации иерархии */
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 /* Стиль для названия папки и тогглера */
 .folder-name {
