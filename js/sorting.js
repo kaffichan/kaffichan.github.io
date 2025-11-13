@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("sorting.js: Файл загружен. Инициализация делегирования событий.");
+    console.log("sorting.js: Файл загружен. Инициализация.");
     
     // Используем делегирование событий на корневом элементе
     const fileTreeRoot = document.querySelector('.file-tree-root');
@@ -11,7 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const folderNameSpan = event.target.closest('.folder-name');
             
             if (folderNameSpan) {
-                console.log("sorting.js: Клик обнаружен. Запуск операции...");
+                // Если мы обработали клик, немедленно останавливаем его дальнейшее распространение.
+                // Это устраняет проблему двойного срабатывания.
+                event.stopImmediatePropagation(); 
+                
+                // console.log("sorting.js: Клик на папке обработан."); // Убираем логи для чистоты
 
                 const folderEntryLi = folderNameSpan.closest('.folder-entry');
                 const folderContentUl = folderEntryLi.querySelector('.folder-content');
@@ -24,20 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Обновляем тогглер
                     if (folderContentUl.classList.contains('collapsed')) {
-                        togglerSpan.textContent = '[+]';
+                        togglerSpan.textContent = '[+]'; // Скрыто
                         folderEntryLi.classList.remove('expanded');
-                        console.log("sorting.js: Папка СКРЫТА. Класс .collapsed добавлен, тогглер: [+]");
                     } else {
-                        togglerSpan.textContent = '[-]';
+                        togglerSpan.textContent = '[-]'; // Открыто
                         folderEntryLi.classList.add('expanded');
-                        console.log("sorting.js: Папка ОТКРЫТА. Класс .collapsed удален, тогглер: [-]");
                     }
-                } else {
-                    console.error("sorting.js: Ошибка! Не найдены folderContentUl или togglerSpan.");
                 }
             }
         });
-    } else {
-        console.error("sorting.js: Ошибка! Элемент .file-tree-root не найден.");
     }
 });
