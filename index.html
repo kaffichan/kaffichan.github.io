@@ -61,9 +61,9 @@ title: 📁 Архив
       {% endif %}
 
       {% comment %} 
-        6. ВЫВОД ФАЙЛА: Обрезаем префикс папки (file_dir) из file_path_relative перед отображением.
+        6. ВЫВОД ФАЙЛА: Используем file.name для отображения только имени файла.
       {% endcomment %}
-      {% assign display_file_name = file_path_relative | remove_first: file_dir %}
+      {% assign display_file_name = file.name %}
       <li class="file-entry">📄 <a href="{{ file.path | relative_url }}" download>{{ display_file_name }}</a></li>
 
     {% endunless %}
