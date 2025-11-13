@@ -1,3 +1,22 @@
+{% assign base_folder = "archive/" %} 
+{% assign excluded_names = "index.html,README.md,.nojekyll,.git,_config.yml,.DS_store" | split: "," %}
+{% assign file_count = 0 %}
+
+{% for file in site.static_files %}
+    {% if file.path contains base_folder %}
+        {% assign skip_name = false %}
+        {% for name in excluded_names %}
+            {% if file.name == name %}
+                {% assign skip_name = true %}
+            {% endif %}
+        {% endfor %}
+        
+        {% unless skip_name %}
+            {% assign file_count = file_count | plus: 1 %}
+        {% endunless %}
+    {% endif %}
+{% endfor %}
+
 <!DOCTYPE html>
 <html lang="ru">
     <head>
@@ -11,6 +30,14 @@
         <div class="archive-container">
             {{ content }}
         </div>
+        
+        <footer class="fixed-footer">
+            <p>
+                Made with cup of <a href="https://t.me/kafferist" target="_blank">Kaffi</a>☕️ and <a href="https://gemini.google.com" target="_blank">Gemini</a>💙🩵
+                <span class="separator">|</span>
+                Количество загруженных файлов: <strong>{{ file_count }}</strong>
+            </p>
+        </footer>
 
         <script src="{{ '/js/sorting.js' | relative_url }}"></script>
     </body>

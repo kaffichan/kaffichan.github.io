@@ -1,7 +1,8 @@
 body { 
     font-family: sans-serif; 
     margin: 20px; 
-    background-color: #f4f4f4; 
+    background-color: #f4f4f4;
+    padding-bottom: 60px; 
 }
 .archive-container { 
     background-color: #fff; 
@@ -23,13 +24,11 @@ a {
 a:hover { 
     text-decoration: underline; 
 }
-
 /* --- Стили для Древа Файлов --- */
 .file-tree-root { 
     list-style: none; 
     padding-left: 0; 
 }
-
 /* Стили для всех списков (вложенных и корневого) */
 .file-tree-root ul {
     list-style: none;
@@ -37,7 +36,6 @@ a:hover {
     margin-top: 5px;
     margin-bottom: 5px;
 }
-
 /* Стиль для названия папки и тогглера */
 .folder-name {
     display: flex;
@@ -47,7 +45,6 @@ a:hover {
     cursor: pointer; /* Для кликабельности */
     margin-bottom: 3px;
 }
-
 /* Стиль для тогглера [+] / [-] */
 .toggler {
     font-size: 1.1em;
@@ -57,16 +54,34 @@ a:hover {
     color: #666;
     user-select: none; /* Предотвратить выделение текста */
 }
-
-/* Скрытие содержимого папки */
 .folder-content.collapsed {
     display: none;
 }
-
-/* Стиль для файлов */
 .file-entry a {
     color: #333;
 }
 .file-entry a:hover {
     color: #0366d6;
+}
+.fixed-footer {
+    position: fixed; 
+    bottom: 0;      
+    left: 0;
+    width: 100%;
+    background-color: #333; /* Темный фон */
+    color: #fff;            /* Светлый текст */
+    padding: 10px 0;
+    text-align: center;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2); /* Тень сверху */
+    z-index: 100; /* Гарантируем, что он поверх всего */
+}
+.fixed-footer a {
+    color: #4078c0; /* Цвет ссылки */
+}
+.fixed-footer a:hover {
+    color: #fff;
+}
+.fixed-footer .separator {
+    margin: 0 10px;
+    color: #666;
 }
