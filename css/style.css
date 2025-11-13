@@ -43,7 +43,7 @@ a:hover {
     font-weight: bold;
     color: #4078c0;
     cursor: pointer; /* Для кликабельности */
-    margin-bottom: 6px;
+    margin-bottom: 3px;
 }
 /* Стиль для тогглера [+] / [-] */
 .toggler {
