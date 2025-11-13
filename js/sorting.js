@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("sorting.js: Файл загружен. Инициализация делегирования событий.");
     
     // Используем делегирование событий на корневом элементе
     const fileTreeRoot = document.querySelector('.file-tree-root');
@@ -6,35 +7,42 @@ document.addEventListener('DOMContentLoaded', function() {
     if (fileTreeRoot) {
         fileTreeRoot.addEventListener('click', function(event) {
             
-            // Ищем элемент, который должен быть кликабельным: <span class="folder-name">
+            // 1. Ищем элемент, который должен быть кликабельным: <span class="folder-name">
             const folderNameSpan = event.target.closest('.folder-name');
             
             if (folderNameSpan) {
-                // Если клик был на названии папки (или внутри него),
-                // находим все связанные элементы:
-                
+                console.log("sorting.js: Клик обнаружен на названии папки.");
+
                 const folderEntryLi = folderNameSpan.closest('.folder-entry');
-                // Контент папки - это следующий элемент <ul>
                 const folderContentUl = folderEntryLi.querySelector('.folder-content');
-                // Тогглер - это элемент внутри названия папки
                 const togglerSpan = folderNameSpan.querySelector('.toggler');
 
-                // Убедимся, что все элементы найдены, прежде чем что-то менять
+                // 2. Убедимся, что все элементы найдены
                 if (folderContentUl && togglerSpan) {
+                    console.log("sorting.js: Все элементы найдены. Переключение класса...");
                     
-                    // 1. Переключаем класс для скрытия/отображения
+                    // Переключаем класс (ДОЛЖЕН УДАЛИТЬ .collapsed при втором клике)
                     folderContentUl.classList.toggle('collapsed');
                     
-                    // 2. Обновляем символ тогглера и класс родительского LI
+                    // Обновляем символ тогглера и класс
                     if (folderContentUl.classList.contains('collapsed')) {
-                        togglerSpan.textContent = '[+]';
+                        togglerSpan.textContent = '[+]'; // Скрыто
                         folderEntryLi.classList.remove('expanded');
+                        console.log("sorting.js: Папка СКРЫТА. Класс .collapsed добавлен, тогглер: [+]");
                     } else {
-                        togglerSpan.textContent = '[-]';
+                        togglerSpan.textContent = '[-]'; // Открыто
                         folderEntryLi.classList.add('expanded');
+                        console.log("sorting.js: Папка ОТКРЫТА. Класс .collapsed удален, тогглер: [-]");
                     }
+                } else {
+                    // Это может случиться, если структура HTML не соответствует ожидаемой
+                    console.error("sorting.js: Ошибка! Не удалось найти folderContentUl или togglerSpan.");
+                    console.log("folderContentUl:", folderContentUl);
+                    console.log("togglerSpan:", togglerSpan);
                 }
             }
         });
+    } else {
+        console.error("sorting.js: Ошибка! Элемент .file-tree-root не найден.");
     }
 });
