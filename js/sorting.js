@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Функция для обработки клика по тогглеру
-    function toggleFolder(event) {
-        const folderNameSpan = event.currentTarget;
+    // 1. Функция-обработчик клика
+    function toggleFolder(folderNameSpan) {
         const folderEntryLi = folderNameSpan.closest('.folder-entry');
         const folderContentUl = folderEntryLi.querySelector('.folder-content');
         const togglerSpan = folderNameSpan.querySelector('.toggler');
@@ -10,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Переключаем класс для скрытия/отображения
             folderContentUl.classList.toggle('collapsed');
             
-            // Обновляем символ тогглера
+            // Обновляем символ тогглера и класс
             if (folderContentUl.classList.contains('collapsed')) {
                 togglerSpan.textContent = '[+]';
                 folderEntryLi.classList.remove('expanded');
@@ -21,9 +20,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Находим все элементы с названием папки и прикрепляем обработчик
-    const folderNames = document.querySelectorAll('.folder-name');
-    folderNames.forEach(name => {
-        name.addEventListener('click', toggleFolder);
-    });
+    // 2. Используем делегирование событий
+    const fileTreeRoot = document.querySelector('.file-tree-root');
+
+    if (fileTreeRoot) {
+        fileTreeRoot.addEventListener('click', function(event) {
+            // Проверяем, был ли клик по элементу с классом .folder-name
+            const folderNameElement = event.target.closest('.folder-name');
+            
+            if (folderNameElement) {
+                // Если да, вызываем нашу функцию toggleFolder, передавая найденный элемент
+                toggleFolder(folderNameElement);
+            }
+        });
+    }
 });
