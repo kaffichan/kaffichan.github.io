@@ -67,17 +67,32 @@ a:hover {
 }
 /* --- Замена иконки Папки (📁) --- */
 .folder-name {
-    color: #4078c0;
+    /* Удаляем эмодзи '📁' из HTML (если он там остался) */
+    /* и добавляем иконку через CSS */
+    display: flex; /* Важно, чтобы иконка была рядом с текстом */
+    align-items: center;
 }
 .folder-name::after {
-    content: none;
+    content: ''; /* Используем пустой content для вставки иконки */
     margin-left: 5px; 
     display: block;
     width: 20px;
     height: 20px;
-    background-image: url('/img/folder.svg');
+    background-image: url('/img/folder.svg'); /* <-- УБЕДИТЕСЬ, что этот путь верен */
     background-size: contain;
     background-repeat: no-repeat;
+}
+/* --- Замена иконки Файла (📄) --- */
+.file-entry::before {
+    content: ''; /* Используем пустой content для вставки иконки */
+    margin-right: 5px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url('/img/file.svg'); /* <-- УБЕДИТЕСЬ, что этот путь верен */
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle; 
 }
 /* Скрытие содержимого папки */
 .folder-content.collapsed {

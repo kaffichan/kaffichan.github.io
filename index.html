@@ -7,21 +7,15 @@ title: 📁 Архив
 <p>Хранилище проектов, скриптов, задач и работ.</p>
 
 {% assign all_files = site.static_files | sort: "path" %}
-
 <ul class="file-tree-root">
-{% assign current_dir = "/" %}
 {% assign base_folder = "archive/" %} 
+{% assign excluded_names = "index.html,README.md,.nojekyll,.git,_config.yml,.DS_store" | split: "," %}
 
-{% assign all_files = site.static_files | sort: "path" %}
-{% assign base_folder = "archive/" %} 
-{% assign current_path_parts = "" | split: ',' %}
+{% assign current_path_string = "" %}
 
 {% for file in all_files %}
-  {% comment %} 1. Фильтр: Файл должен содержать "archive/" {% endcomment %}
   {% if file.path contains base_folder %}
     
-    {% comment %} 2. Исключаем служебные файлы {% endcomment %}
-    {% assign excluded_names = "index.html,README.md,.nojekyll,.git,_config.yml,.DS_store" | split: "," %}
     {% assign skip_name = false %}
     {% for name in excluded_names %}
       {% if file.name == name %}
@@ -31,72 +25,70 @@ title: 📁 Архив
     
     {% unless skip_name %}
 
-      {% comment %} 3. Обрезаем путь: /archive/folder/file.txt -> folder/file.txt {% endcomment %}
+      {% comment %} 1. Определяем путь и части {% endcomment %}
       {% assign path_without_leading_slash = file.path | remove_first: "/" %} 
       {% assign file_path_relative = path_without_leading_slash | remove_first: base_folder %} 
       
-      {% comment %} 4. Разбиваем путь на части: ["py", "script.py"] {% endcomment %}
-      {% assign file_path_parts = file_path_relative | split: "/" %}
-      {% assign file_dir_depth = file_path_parts | size | minus: 1 %}
+      {% comment %} Путь к папке файла (например, py/semtask/) {% endcomment %}
+      {% assign file_dir_path = file_path_relative | remove: file.name %} 
       
-      
-      {% comment %} 5. ЛОГИКА ОТКРЫТИЯ/ЗАКРЫТИЯ ПАПОК (ИСПРАВЛЕНО) {% endcomment %}
+      {% comment %} 2. Логика Закрытия Папок (Поднимаемся на уровень выше или меняем ветку) {% endcomment %}
+      {% if file_dir_path != current_path_string %}
+        
+        {% comment %} Закрываем все папки, которых нет в новом пути {% endcomment %}
+        {% assign new_path_parts = file_dir_path | split: "/" %}
+        {% assign current_path_parts = current_path_string | split: "/" %}
+        {% assign common_depth = 0 %}
+        {% for i in (0..current_path_parts.size) %}
+            {% if current_path_parts[i] == new_path_parts[i] and current_path_parts[i] != nil %}
+                {% assign common_depth = common_depth | plus: 1 %}
+            {% else %}
+                {% break %}
+            {% endif %}
+        {% endfor %}
 
-      {% assign current_depth = current_path_parts | size %}
-
-      {% comment %} 5A. Определяем общую глубину (Common Depth) {% endcomment %}
-      {% assign common_depth = 0 %}
-      {% for i in (0..current_depth) %}
-        {% if file_path_parts[i] == current_path_parts[i] %}
-          {% assign common_depth = common_depth | plus: 1 %}
-        {% else %}
-          {% break %}
-        {% endif %}
-      {% endfor %}
-
-      {% comment %} 5B. Закрываем папки, которые больше не нужны {% endcomment %}
-      {% assign num_to_close = current_depth | minus: common_depth %}
-      {% for i in (1..num_to_close) %}
-        </ul></li>{% comment %} Закрываем </ul> и <li> {% endcomment %}
-      {% endfor %}
-
-      {% comment %} Обновляем текущий путь до общего уровня {% endcomment %}
-      {% assign current_path_parts = current_path_parts | slice: 0, common_depth %}
+        {% assign num_to_close = current_path_parts.size | minus: common_depth %}
+        {% for i in (1..num_to_close) %}
+            </ul></li>{% comment %} Закрываем </ul> и <li> {% endcomment %}
+        {% endfor %}
+        
+      {% endif %}
 
 
-      {% comment %} 5C. Открываем новые папки, если нужно углубиться {% endcomment %}
-      {% for i in (common_depth..file_dir_depth) %}
-        {% assign part = file_path_parts[i] %}
-        {% if i < file_dir_depth %}
-          {% comment %} Это папка. Открываем ее. {% endcomment %}
-          
-          {% assign folder_name = part %}
-          <li class="folder-entry collapsed-icon">
-            <span class="folder-name"><span class="toggler"></span> {{ folder_name }}</span>
-            <ul class="folder-content collapsed">
-            
-            {% comment %} Правильное добавление элемента в массив в Liquid (обновление текущего пути) {% endcomment %}
-            {% assign new_path = "" | split: ',' %}
-            {% for item in current_path_parts %}
-              {% assign new_path = new_path | push: item %}
-            {% endfor %}
-            {% assign new_path = new_path | push: part %}
-            {% assign current_path_parts = new_path %}
+      {% comment %} 3. Логика Открытия Папок (Углубляемся) {% endcomment %}
+      {% if file_dir_path != current_path_string %}
+        
+        {% comment %} Открываем новые папки, которых нет в текущем пути {% endcomment %}
+        {% assign current_path_parts = current_path_string | split: "/" %}
+        {% assign new_path_parts = file_dir_path | split: "/" %}
 
-        {% endif %}
-      {% endfor %}
+        {% for i in (current_path_parts.size..new_path_parts.size) %}
+          {% assign part = new_path_parts[i] %}
+          {% if part != nil and part != "" %}
+
+            {% comment %} ОТКРЫТИЕ ПАПКИ: Генерируем новый LI/UL с классом 'collapsed' {% endcomment %}
+            <li class="folder-entry collapsed-icon">
+              <span class="folder-name"><span class="toggler"></span> {{ part }}</span>
+              <ul class="folder-content collapsed">
+              
+            {% assign current_path_string = current_path_string | append: part | append: "/" %}
+
+          {% endif %}
+        {% endfor %}
+
+      {% endif %}
 
       
-      {% comment %} 6. ВЫВОД ФАЙЛА: Используем file.name {% endcomment %}
+      {% comment %} 4. ВЫВОД ФАЙЛА (УБРАН ЭМОДЗИ 📄) {% endcomment %}
       <li class="file-entry"> <a href="{{ file.path | relative_url }}" download>{{ file.name }}</a></li>
 
     {% endunless %}
   {% endif %}
-
 {% endfor %}
 
-{% comment %} 7. Закрываем все оставшиеся открытые папки {% endcomment %}
-{% assign current_depth = current_path_parts | size %}
+{% comment %} 5. Закрываем все оставшиеся открытые папки {% endcomment %}
+{% assign current_path_parts = current_path_string | split: "/" %}
+{% assign current_depth = current_path_parts.size | minus: 1 %}
 {% for i in (1..current_depth) %}
   </ul></li> 
 {% endfor %}
