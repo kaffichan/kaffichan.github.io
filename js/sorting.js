@@ -1,37 +1,52 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("sorting.js: Файл загружен. Инициализация.");
+    console.log("sorting.js: Инициализация.");
     
-    // Используем делегирование событий на корневом элементе
-    const fileTreeRoot = document.querySelector('.file-tree-root');
+    // 1. ФУНКЦИЯ СОРТИРОВКИ (Папки вверх)
+    function sortFoldersFirst() {
+        // Находим все списки (корневой и вложенные)
+        const allLists = document.querySelectorAll('.file-tree-root, .folder-content');
+        
+        allLists.forEach(ul => {
+            // Превращаем живую коллекцию children в массив
+            const items = Array.from(ul.children);
+            
+            // Отделяем папки от файлов
+            const folders = items.filter(li => li.classList.contains('folder-entry'));
+            const files = items.filter(li => li.classList.contains('file-entry'));
+            
+            // Если порядок уже правильный, можно не трогать, но для надежности передобавим:
+            // Сначала добавляем все папки
+            folders.forEach(folder => ul.appendChild(folder));
+            // Затем добавляем все файлы
+            files.forEach(file => ul.appendChild(file));
+        });
+    }
 
+    // Запускаем сортировку сразу
+    sortFoldersFirst();
+
+    // 2. ЛОГИКА ОТКРЫТИЯ/ЗАКРЫТИЯ (Твой старый код с небольшими правками)
+    const fileTreeRoot = document.querySelector('.file-tree-root');
     if (fileTreeRoot) {
         fileTreeRoot.addEventListener('click', function(event) {
-            
-            // Ищем элемент, который должен быть кликабельным: <span class="folder-name">
             const folderNameSpan = event.target.closest('.folder-name');
             
             if (folderNameSpan) {
-                // Если мы обработали клик, немедленно останавливаем его дальнейшее распространение.
-                // Это устраняет проблему двойного срабатывания.
                 event.stopImmediatePropagation(); 
                 
-                // console.log("sorting.js: Клик на папке обработан."); // Убираем логи для чистоты
-
                 const folderEntryLi = folderNameSpan.closest('.folder-entry');
                 const folderContentUl = folderEntryLi.querySelector('.folder-content');
+                // Ищем тогглер внутри нажатого элемента
                 const togglerSpan = folderNameSpan.querySelector('.toggler');
 
                 if (folderContentUl && togglerSpan) {
-                    
-                    // Переключаем класс
                     folderContentUl.classList.toggle('collapsed');
                     
-                    // Обновляем тогглер
                     if (folderContentUl.classList.contains('collapsed')) {
-                        togglerSpan.textContent = '[+]'; // Скрыто
+                        togglerSpan.textContent = '[+]';
                         folderEntryLi.classList.remove('expanded');
                     } else {
-                        togglerSpan.textContent = '[-]'; // Открыто
+                        togglerSpan.textContent = '[-]';
                         folderEntryLi.classList.add('expanded');
                     }
                 }

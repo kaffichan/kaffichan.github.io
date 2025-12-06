@@ -49,11 +49,13 @@ a:hover {
 /* Стиль для тогглера [+] / [-] */
 .toggler {
     font-size: 1.1em;
-    width: 15px;
+    width: 20px; /* Чуть шире для удобства нажатия */
     text-align: center;
-    margin-right: 10px;
+    margin-right: 5px;
     color: #666;
-    user-select: none; /* Предотвратить выделение текста */
+    user-select: none;
+    /* КРИТИЧНО: Запрещаем сжатие элемента */
+    flex-shrink: 0; 
 }
 .folder-content.collapsed {
     display: none;
@@ -67,21 +69,34 @@ a:hover {
 
 /* --- ЗАМЕНА ЭМОДЗИ ПАПКИ (📁) на ИЗОБРАЖЕНИЕ --- */
 .folder-name {
-    /* Чтобы расположить иконку, [+][-], и название в ряд */
-    display: flex; 
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    color: #4078c0;
+    cursor: pointer;
+    margin-bottom: 3px;
+    user-select: none;
+    /* Запрещаем перенос строк, чтобы [-] не улетал */
+    white-space: nowrap; 
+}
+
+.folder-name .name-text {
+    display: flex;
     align-items: center;
 }
-.folder-name::before {
-    /* Это наш контейнер для иконки папки */
+.folder-name .name-text::before {
     content: '';
     display: inline-block;
-    width: 20px; /* Размер иконки */
+    width: 20px;
     height: 20px;
     margin-right: 5px;
-    background-image: url('/img/folder.svg'); /* <-- ПРОВЕРЬТЕ ПУТЬ */
+    /* Убедись, что путь правильный */
+    background-image: url('/img/folder.svg'); 
     background-size: contain;
     background-repeat: no-repeat;
     vertical-align: middle;
+    /* Иконка тоже не должна сжиматься */
+    flex-shrink: 0; 
 }
 /* Скрываем эмодзи 📁 в index.html (используйте CSS-селектор для скрытия эмодзи,
     если он остается в HTML, или просто удалите его из index.html) */
