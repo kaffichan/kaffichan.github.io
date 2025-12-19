@@ -1,9 +1,23 @@
-def summa(data):
-    # проверяем длину списка, если несоотвествие возвращаем "error"
+def _validate_input(data):
+
+    # проверка является ли вход списком
+    if not isinstance(data, list):
+        return False
+    
+    # проверка на длину списка
     if len(data) != 4:
+        return False
+    
+    # проверка гарантирует, что элементы списка являются числами
+    for item in data:
+        if not isinstance(item, (int, float)):
+            return False
+    return True
+    
+def summa(data):
+    if not _validate_input(data):
         return "error"
     
-    # если возникнет исключение, код прерывается и передаётся блоку except
     try:
         # присваиваем элементы списка переменным
         a, b, c, d = data
@@ -15,7 +29,7 @@ def summa(data):
         return "error"
 
 def raznost(data):
-    if len(data) != 4:
+    if not _validate_input(data):
         return "error"
     
     try:
@@ -27,7 +41,7 @@ def raznost(data):
         return "error"
 
 def multi(data):
-    if len(data) != 4:
+    if not _validate_input(data):
         return "error"
     
     try:
@@ -43,7 +57,7 @@ def multi(data):
         return "error"
 
 def divide(data):
-    if len(data) != 4:
+    if not _validate_input(data):
         return "error"
     
     try:
