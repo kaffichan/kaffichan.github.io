@@ -13,7 +13,7 @@ def _validate_input(data):
         if not isinstance(item, (int, float)):
             return False
     return True
-    
+
 def summa(data):
     if not _validate_input(data):
         return "error"
