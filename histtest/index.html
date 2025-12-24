@@ -34,19 +34,27 @@
             text-align: center;
         }
 
-        h1 {
-            font-size: 20px;
-            margin-bottom: 10px;
+        /* Стили для стартового экрана */
+        .start-content h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
             color: #333;
+        }
+
+        .start-content .welcome-text {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
         }
 
         .stats {
             font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
+            color: #888;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
-            padding: 0 10px;
+            padding: 0 5px;
         }
 
         .card {
@@ -57,9 +65,10 @@
             margin-bottom: 25px;
             min-height: 120px;
             display: flex;
+            flex-direction: column; /* Изменено для поддержки контента внутри */
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 500;
             line-height: 1.4;
         }
@@ -67,13 +76,13 @@
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
 
         button {
             background: var(--card-bg);
-            border: 2px solid transparent; /* Reserve space for border */
-            border-radius: 12px;
+            border: 2px solid transparent;
+            border-radius: 14px;
             padding: 15px 5px;
             font-size: 16px;
             font-weight: 600;
@@ -87,10 +96,11 @@
             align-items: center;
             justify-content: center;
             word-break: break-word;
+            width: 100%; /* Чтобы кнопки заполняли сетку */
         }
 
         button:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
         }
 
         button.correct {
@@ -105,69 +115,59 @@
             border-color: var(--wrong);
         }
 
-        .btn-restart {
-            margin-top: 30px;
-            width: 100%;
+        /* Главная кнопка (Начать / Рестарт) */
+        .btn-main {
             background-color: var(--primary);
             color: white;
+            font-size: 18px;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+            margin-top: 10px;
         }
 
         .hidden {
-            display: none;
-        }
-
-        /* Start Screen */
-        #start-screen {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .welcome-text {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 20px;
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div id="start-screen">
+        
+        <div id="start-screen" class="start-content">
             <h1>История России<br>(Даты IX-XVIII вв.)</h1>
-            <div class="welcome-text">В базе 70 событий.<br>Проверь свои знания!</div>
-            <button class="btn-restart" onclick="startGame()">Начать игру</button>
+            <div class="welcome-text">В базе 70 событий.<br>Проверь свои знания перед экзаменом!</div>
+            <button class="btn-main" onclick="startGame()">Начать игру</button>
         </div>
 
         <div id="game-screen" class="hidden">
             <div class="stats">
-                <span id="progress-text">0 / 0</span>
+                <span id="progress-text">1 / 70</span>
                 <span id="score-text">Ошибок: 0</span>
             </div>
             
             <div class="card" id="question-text">
-                Текст вопроса
-            </div>
+                </div>
 
             <div class="options-grid" id="options-container">
                 </div>
         </div>
 
         <div id="end-screen" class="hidden">
-            <h1>Игра окончена!</h1>
-            <div class="card" style="flex-direction: column;">
-                <p>Ваш результат:</p>
-                <h2 id="final-score" style="font-size: 40px; margin: 10px 0; color: var(--primary);"></h2>
-                <p id="final-message"></p>
+            <h1 style="margin-bottom: 20px;">Игра окончена!</h1>
+            <div class="card">
+                <p style="color: #888; font-size: 16px; margin: 0;">Ваш результат:</p>
+                <h2 id="final-score" style="font-size: 48px; margin: 15px 0; color: var(--primary);"></h2>
+                <p id="final-message" style="font-size: 16px; margin: 0;"></p>
             </div>
-            <button class="btn-restart" onclick="startGame()">Начать заново</button>
+            <button class="btn-main" onclick="startGame()">Начать заново</button>
         </div>
+
     </div>
 
     <script>
-        // База данных из прикрепленных картинок
+        // Полная база данных (70 событий)
         const database = [
-            // Image 2 (Chronologically earlier)
             { d: "862 г.", t: "Призвание Рюрика на Новгородское княжение" },
             { d: "882–912 гг.", t: "Княжение Олега" },
             { d: "912-945 гг.", t: "Княжение Игоря" },
@@ -194,7 +194,7 @@
             { d: "1552 г.", t: "Завоевание Казанского ханства" },
             { d: "1556 г.", t: "Завоевание Астраханского ханства" },
             { d: "1558 – 1583 гг.", t: "Ливонская война" },
-            { d: "1564 г.", t: "Русский первопечатник Иван Федоров выпустил первую печатную книгу «Апостол»" }, // From Img 1 but fits chronology roughly here
+            { d: "1564 г.", t: "Русский первопечатник Иван Федоров выпустил первую печатную книгу «Апостол»" }, 
             { d: "1565-1572 гг.", t: "Опричнина" },
             { d: "1581-1585 гг.", t: "Поход Ермака в Сибирь" },
             { d: "1584-1598 гг.", t: "Правление Федора Ивановича" },
@@ -206,8 +206,6 @@
             { d: "1608 – 1610 гг.", t: "Попытка Лжедмитрия II захватить власть" },
             { d: "1611 г.", t: "Образование в Нижнем Новгороде второго ополчения (Минин и Пожарский)" },
             { d: "1613 – 1645 гг.", t: "Царствование Михаила Романова" },
-            
-            // Image 1
             { d: "1632-1634 гг.", t: "Смоленская война" },
             { d: "1645 – 1676 гг.", t: "Царствование Алексея Михайловича" },
             { d: "1648 г.", t: "Соляной бунт" },
@@ -249,12 +247,12 @@
         const startScreen = document.getElementById('start-screen');
         const gameScreen = document.getElementById('game-screen');
         const endScreen = document.getElementById('end-screen');
+        
         const questionText = document.getElementById('question-text');
         const optionsContainer = document.getElementById('options-container');
         const progressText = document.getElementById('progress-text');
         const scoreText = document.getElementById('score-text');
 
-        // Перемешивание массива (alg: Fisher-Yates)
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -264,15 +262,16 @@
         }
 
         function startGame() {
-            // Сброс состояния
-            currentQuestions = shuffle([...database]); // Копия базы
-            currentIndex = 0;
-            mistakes = 0;
-            
-            // Интерфейс
-            startScreen.classList.add('hidden');
+            // ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ
+            // Скрываем все экраны, кроме игрового
+            startScreen.classList.add('hidden'); 
             endScreen.classList.add('hidden');
             gameScreen.classList.remove('hidden');
+
+            // Сброс переменных
+            currentQuestions = shuffle([...database]); 
+            currentIndex = 0;
+            mistakes = 0;
             
             showQuestion();
         }
@@ -286,25 +285,19 @@
 
             const currentData = currentQuestions[currentIndex];
             
-            // Обновляем текст
             questionText.innerText = currentData.t;
             progressText.innerText = `${currentIndex + 1} / ${currentQuestions.length}`;
             scoreText.innerText = `Ошибок: ${mistakes}`;
 
-            // Генерируем варианты ответов
             let options = [currentData.d];
-            
-            // Добавляем 3 неправильных варианта
             while (options.length < 4) {
                 const randomItem = database[Math.floor(Math.random() * database.length)];
                 if (!options.includes(randomItem.d)) {
                     options.push(randomItem.d);
                 }
             }
-            
             options = shuffle(options);
 
-            // Рендерим кнопки
             optionsContainer.innerHTML = '';
             options.forEach(opt => {
                 const btn = document.createElement('button');
@@ -325,13 +318,12 @@
                 setTimeout(() => {
                     currentIndex++;
                     showQuestion();
-                }, 800);
+                }, 700);
             } else {
                 btn.classList.add('wrong');
                 mistakes++;
                 scoreText.innerText = `Ошибок: ${mistakes}`;
                 
-                // Подсветить правильный ответ
                 buttons.forEach(b => {
                     if (b.innerText === correct) {
                         b.classList.add('correct');
@@ -341,12 +333,14 @@
                 setTimeout(() => {
                     currentIndex++;
                     showQuestion();
-                }, 1500); // Чуть дольше пауза, чтобы запомнить правильный ответ
+                }, 1500);
             }
         }
 
         function endGame() {
+            // ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ
             gameScreen.classList.add('hidden');
+            startScreen.classList.add('hidden'); // На всякий случай убеждаемся, что старт скрыт
             endScreen.classList.remove('hidden');
             
             const finalScore = document.getElementById('final-score');
@@ -354,13 +348,18 @@
             
             const total = currentQuestions.length;
             const correct = total - mistakes;
-            const percent = Math.round((correct / total) * 100);
-
-            finalScore.innerText = `${percent}%`;
+            // Защита от деления на ноль, если база пустая (маловероятно)
+            const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
             
-            if (percent === 100) finalMessage.innerText = "Идеально! Вы готовы к экзамену.";
-            else if (percent > 80) finalMessage.innerText = "Отличный результат!";
-            else if (percent > 50) finalMessage.innerText = "Неплохо, но можно повторить.";
+            // Если ошибок больше, чем вопросов (из-за повторных кликов), корректируем 0%
+            const displayPercent = percent < 0 ? 0 : percent;
+
+            finalScore.innerText = `${displayPercent}%`;
+            
+            if (displayPercent === 100) finalMessage.innerText = "Идеально! Вы готовы к экзамену.";
+            else if (displayPercent >= 90) finalMessage.innerText = "Отличный результат!";
+            else if (displayPercent >= 70) finalMessage.innerText = "Хорошо, но есть пробелы.";
+            else if (displayPercent >= 50) finalMessage.innerText = "Неплохо, но можно повторить.";
             else finalMessage.innerText = "Стоит подучить даты.";
         }
     </script>
