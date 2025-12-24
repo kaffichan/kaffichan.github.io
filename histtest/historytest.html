@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Даты Истории России</title>
+    <style>
+        :root {
+            --primary: #007AFF;
+            --correct: #34C759;
+            --wrong: #FF3B30;
+            --bg: #F2F2F7;
+            --card-bg: #FFFFFF;
+            --text: #000000;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text);
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .stats {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            background: var(--card-bg);
+            border: 2px solid transparent; /* Reserve space for border */
+            border-radius: 12px;
+            padding: 15px 5px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button.correct {
+            background-color: var(--correct);
+            color: white;
+            border-color: var(--correct);
+        }
+
+        button.wrong {
+            background-color: var(--wrong);
+            color: white;
+            border-color: var(--wrong);
+        }
+
+        .btn-restart {
+            margin-top: 30px;
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Start Screen */
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="start-screen">
+            <h1>История России<br>(Даты IX-XVIII вв.)</h1>
+            <div class="welcome-text">В базе 70 событий.<br>Проверь свои знания!</div>
+            <button class="btn-restart" onclick="startGame()">Начать игру</button>
+        </div>
+
+        <div id="game-screen" class="hidden">
+            <div class="stats">
+                <span id="progress-text">0 / 0</span>
+                <span id="score-text">Ошибок: 0</span>
+            </div>
+            
+            <div class="card" id="question-text">
+                Текст вопроса
+            </div>
+
+            <div class="options-grid" id="options-container">
+                </div>
+        </div>
+
+        <div id="end-screen" class="hidden">
+            <h1>Игра окончена!</h1>
+            <div class="card" style="flex-direction: column;">
+                <p>Ваш результат:</p>
+                <h2 id="final-score" style="font-size: 40px; margin: 10px 0; color: var(--primary);"></h2>
+                <p id="final-message"></p>
+            </div>
+            <button class="btn-restart" onclick="startGame()">Начать заново</button>
+        </div>
+    </div>
+
+    <script>
+        // База данных из прикрепленных картинок
+        const database = [
+            // Image 2 (Chronologically earlier)
+            { d: "862 г.", t: "Призвание Рюрика на Новгородское княжение" },
+            { d: "882–912 гг.", t: "Княжение Олега" },
+            { d: "912-945 гг.", t: "Княжение Игоря" },
+            { d: "945-972 гг.", t: "Княжение Святослава" },
+            { d: "980-1015 гг.", t: "Княжение Владимира" },
+            { d: "988 г.", t: "Крещение Руси князем Владимиром Святославичем" },
+            { d: "1019–1054 гг.", t: "Княжение Ярослава Мудрого" },
+            { d: "1097 г.", t: "Любечский съезд" },
+            { d: "1113–1125 гг.", t: "Княжение Владимира Мономаха" },
+            { d: "1147 г.", t: "Первое упоминание Москвы в летописи" },
+            { d: "1223 г.", t: "Битва на р.Калке" },
+            { d: "1237-1240 гг.", t: "Завоевание Руси ханом Батыем" },
+            { d: "1240 г.", t: "Невская битва" },
+            { d: "1242 г.", t: "Ледовое побоище" },
+            { d: "1380 г.", t: "Куликовская битва" },
+            { d: "1382 г.", t: "Разорение Москвы ханом Тохтамышем" },
+            { d: "1462-1505 гг.", t: "Княжение Ивана III" },
+            { d: "1480 г.", t: "«Стояние» на р. Угре. Падение Ордынского владычества" },
+            { d: "1497 г.", t: "Принятие общерусского Судебника" },
+            { d: "1505-1533 гг.", t: "Правление Василия III" },
+            { d: "1533 – 1584 гг.", t: "Правление Ивана IV Грозного" },
+            { d: "1547 г.", t: "Венчание на царство Ивана IV" },
+            { d: "1549 г.", t: "Созыв первого Земского собора" },
+            { d: "1552 г.", t: "Завоевание Казанского ханства" },
+            { d: "1556 г.", t: "Завоевание Астраханского ханства" },
+            { d: "1558 – 1583 гг.", t: "Ливонская война" },
+            { d: "1564 г.", t: "Русский первопечатник Иван Федоров выпустил первую печатную книгу «Апостол»" }, // From Img 1 but fits chronology roughly here
+            { d: "1565-1572 гг.", t: "Опричнина" },
+            { d: "1581-1585 гг.", t: "Поход Ермака в Сибирь" },
+            { d: "1584-1598 гг.", t: "Правление Федора Ивановича" },
+            { d: "1598 – 1613 гг.", t: "Смутное время" },
+            { d: "1598 – 1605 гг.", t: "Царствование Бориса Годунова" },
+            { d: "1605 – 1606 гг.", t: "Правление Лжедмитрия I" },
+            { d: "1606 – 1607 гг.", t: "Восстание под предводительством И.И. Болотникова" },
+            { d: "1606 – 1610 гг.", t: "Царствование Василия Шуйского" },
+            { d: "1608 – 1610 гг.", t: "Попытка Лжедмитрия II захватить власть" },
+            { d: "1611 г.", t: "Образование в Нижнем Новгороде второго ополчения (Минин и Пожарский)" },
+            { d: "1613 – 1645 гг.", t: "Царствование Михаила Романова" },
+            
+            // Image 1
+            { d: "1632-1634 гг.", t: "Смоленская война" },
+            { d: "1645 – 1676 гг.", t: "Царствование Алексея Михайловича" },
+            { d: "1648 г.", t: "Соляной бунт" },
+            { d: "1649 г.", t: "Принятие Соборного Уложения" },
+            { d: "1654 г.", t: "Переяславская Рада, воссоединение Украины с Россией" },
+            { d: "1654 г.", t: "Начало раскола в Русской Православной Церкви" },
+            { d: "1662 г.", t: "Медный бунт" },
+            { d: "1667- 1671 гг.", t: "Восстание Степана Разина" },
+            { d: "1682–1725 гг.", t: "Правление Петра I" },
+            { d: "1695, 1696 гг.", t: "Азовские походы" },
+            { d: "1697-1698 гг.", t: "Великое посольство Петра I" },
+            { d: "1700-1721 гг.", t: "Северная война" },
+            { d: "1700, 1 января", t: "Введение нового летосчисления" },
+            { d: "1703 г.", t: "Основание Санкт-Петербурга" },
+            { d: "1721 г.", t: "Провозглашение Петра I императором" },
+            { d: "1722 г.", t: "Учреждение Табели о рангах" },
+            { d: "1725 г.", t: "Открытие Академии наук в Петербурге" },
+            { d: "1725–1727 гг.", t: "Правление Екатерины I" },
+            { d: "1727–1730 гг.", t: "Правление Петра II" },
+            { d: "1730–1740 гг.", t: "Правление Анны Иоанновны. Бироновщина" },
+            { d: "1741–1761 гг.", t: "Правление Елизаветы Петровны" },
+            { d: "1755 г.", t: "Основание Московского университета" },
+            { d: "1756–1763 гг.", t: "Семилетняя война" },
+            { d: "1761–1762 гг.", t: "Правление Петра III" },
+            { d: "1762–1796 гг.", t: "Правление Екатерины II" },
+            { d: "1768-1774 гг.", t: "Русско-турецкая война. Кючук-Кайнарджийский мир" },
+            { d: "1773–1775 гг.", t: "Восстание под предводительством Е. Пугачева" },
+            { d: "1772, 1793, 1795 гг.", t: "Разделы Речи Посполитой" },
+            { d: "1783 г.", t: "Присоединение Крымского ханства" },
+            { d: "1787–1791 гг.", t: "Русско-турецкая война. Ясский мир" },
+            { d: "1796–1801 гг.", t: "Правление Павла I" }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let mistakes = 0;
+        let canClick = true;
+
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const progressText = document.getElementById('progress-text');
+        const scoreText = document.getElementById('score-text');
+
+        // Перемешивание массива (alg: Fisher-Yates)
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startGame() {
+            // Сброс состояния
+            currentQuestions = shuffle([...database]); // Копия базы
+            currentIndex = 0;
+            mistakes = 0;
+            
+            // Интерфейс
+            startScreen.classList.add('hidden');
+            endScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            canClick = true;
+            if (currentIndex >= currentQuestions.length) {
+                endGame();
+                return;
+            }
+
+            const currentData = currentQuestions[currentIndex];
+            
+            // Обновляем текст
+            questionText.innerText = currentData.t;
+            progressText.innerText = `${currentIndex + 1} / ${currentQuestions.length}`;
+            scoreText.innerText = `Ошибок: ${mistakes}`;
+
+            // Генерируем варианты ответов
+            let options = [currentData.d];
+            
+            // Добавляем 3 неправильных варианта
+            while (options.length < 4) {
+                const randomItem = database[Math.floor(Math.random() * database.length)];
+                if (!options.includes(randomItem.d)) {
+                    options.push(randomItem.d);
+                }
+            }
+            
+            options = shuffle(options);
+
+            // Рендерим кнопки
+            optionsContainer.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, currentData.d);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            if (!canClick) return;
+            canClick = false;
+
+            const buttons = optionsContainer.querySelectorAll('button');
+
+            if (selected === correct) {
+                btn.classList.add('correct');
+                setTimeout(() => {
+                    currentIndex++;
+                    showQuestion();
+                }, 800);
+            } else {
+                btn.classList.add('wrong');
+                mistakes++;
+                scoreText.innerText = `Ошибок: ${mistakes}`;
+                
+                // Подсветить правильный ответ
+                buttons.forEach(b => {
+                    if (b.innerText === correct) {
+                        b.classList.add('correct');
+                    }
+                });
+
+                setTimeout(() => {
+                    currentIndex++;
+                    showQuestion();
+                }, 1500); // Чуть дольше пауза, чтобы запомнить правильный ответ
+            }
+        }
+
+        function endGame() {
+            gameScreen.classList.add('hidden');
+            endScreen.classList.remove('hidden');
+            
+            const finalScore = document.getElementById('final-score');
+            const finalMessage = document.getElementById('final-message');
+            
+            const total = currentQuestions.length;
+            const correct = total - mistakes;
+            const percent = Math.round((correct / total) * 100);
+
+            finalScore.innerText = `${percent}%`;
+            
+            if (percent === 100) finalMessage.innerText = "Идеально! Вы готовы к экзамену.";
+            else if (percent > 80) finalMessage.innerText = "Отличный результат!";
+            else if (percent > 50) finalMessage.innerText = "Неплохо, но можно повторить.";
+            else finalMessage.innerText = "Стоит подучить даты.";
+        }
+    </script>
+</body>
+</html>
