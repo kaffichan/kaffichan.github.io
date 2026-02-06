@@ -3,47 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Тест: Терминология БЖД</title>
+    <title>Полный тест БЖД</title>
     <style>
         :root {
-            --primary-color: #2E7D32; /* Green for safety */
-            --primary-light: #4CAF50;
-            --accent-color: #FF9800; /* Warning orange */
-            --bg-color: #f0f2f5;
+            --primary: #0056b3; /* Строгий синий */
+            --primary-light: #e7f1ff;
+            --success: #28a745;
+            --error: #dc3545;
+            --text: #212529;
+            --bg: #f8f9fa;
             --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-secondary: #666666;
-            --success: #4CAF50;
-            --error: #F44336;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
         }
 
-        #app {
+        #app-container {
             width: 100%;
             max-width: 600px;
             background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
-            min-height: 500px;
         }
 
         /* --- Screens --- */
@@ -53,385 +46,381 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            flex-grow: 1;
+            min-height: 500px;
             text-align: center;
-            transition: opacity 0.3s ease;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
-        /* --- Start Screen --- */
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: var(--primary-color);
-        }
+        /* --- Typography & Elements --- */
+        h1 { font-size: 22px; margin-bottom: 15px; color: var(--primary); }
+        p { font-size: 16px; line-height: 1.5; color: #555; margin-bottom: 25px; }
 
-        .description {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-
-        .btn-start, .btn-restart {
-            background: var(--primary-color);
+        .btn {
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 16px 32px;
             font-size: 18px;
-            border-radius: 50px;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
-            transition: transform 0.1s, background 0.2s;
-        }
-
-        .btn-start:active, .btn-restart:active {
-            transform: scale(0.96);
-            background: var(--primary-light);
-        }
-
-        /* --- Quiz Screen --- */
-        #quiz-screen {
-            justify-content: flex-start;
-            padding-top: 20px;
-        }
-
-        .progress-container {
             width: 100%;
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 3px;
-            margin-bottom: 20px;
-            overflow: hidden;
+            max-width: 300px;
+            transition: opacity 0.2s;
+            font-weight: 600;
         }
+        .btn:active { opacity: 0.8; }
 
-        .progress-bar {
-            height: 100%;
-            background: var(--accent-color);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .question-counter {
+        /* --- Quiz Interface --- */
+        .status-bar {
+            width: 100%;
+            padding: 15px 20px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
             font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #777;
             font-weight: bold;
         }
 
-        .question-text {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 30px;
-            line-height: 1.4;
-            min-height: 80px; /* Prevent layout jump */
+        .question-box {
+            flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px 0;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.4;
         }
 
-        .answers-grid {
+        .options-grid {
             width: 100%;
             display: grid;
-            grid-template-columns: 1fr;
             gap: 12px;
+            margin-top: auto;
         }
 
-        .answer-btn {
+        .option-btn {
             background: #fff;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
             padding: 15px;
-            border-radius: 12px;
             font-size: 16px;
-            color: var(--text-main);
+            color: var(--text);
+            text-align: left;
             cursor: pointer;
             transition: all 0.2s;
-            text-align: left;
-            position: relative;
             outline: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .answer-btn:hover {
-            border-color: var(--primary-color);
-            background: #f9fdf9;
-        }
+        .option-btn:active { background-color: var(--primary-light); }
 
-        .answer-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Feedback States */
-        .answer-btn.correct {
+        /* Feedback Styles */
+        .option-btn.correct {
             background-color: var(--success);
             color: white;
             border-color: var(--success);
         }
-
-        .answer-btn.wrong {
+        .option-btn.wrong {
             background-color: var(--error);
             color: white;
             border-color: var(--error);
-            animation: shake 0.4s;
         }
-
-        .answer-btn.disabled {
-            pointer-events: none;
-            opacity: 0.7;
-        }
+        .disabled { pointer-events: none; }
 
         /* --- Result Screen --- */
-        .score-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
+        .score-display {
+            font-size: 48px;
             font-weight: bold;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 15px rgba(46, 125, 50, 0.4);
-        }
-
-        .result-message {
-            font-size: 20px;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            50% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
-            100% { transform: translateX(0); }
-        }
-
-        /* Mobile specific adjustments */
-        @media (min-width: 600px) {
-            .answers-grid {
-                grid-template-columns: 1fr 1fr; /* 2 columns on larger screens */
-            }
+            color: var(--primary);
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
 
-<div id="app">
+<div id="app-container">
     <div id="start-screen" class="screen">
-        <h1>БЖД: Терминология</h1>
-        <div class="description">
-            <p>Проверьте свои знания основных понятий Безопасности Жизнедеятельности.</p>
-            <br>
-            <p>Вам будет дано определение, ваша задача — выбрать правильный термин.</p>
-        </div>
-        <button class="btn-start" onclick="quiz.start()">Начать тест</button>
+        <h1>Терминология БЖД</h1>
+        <p>Полный тест на знание определений.<br>Вопросы составлены дословно по учебным материалам.</p>
+        <p style="font-size: 14px; color: #888;">Всего вопросов: <span id="total-q-count"></span></p>
+        <button class="btn" onclick="app.start()">Начать тест</button>
     </div>
 
-    <div id="quiz-screen" class="screen hidden">
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
+    <div id="quiz-screen" class="screen hidden" style="justify-content: flex-start;">
+        <div class="status-bar">
+            <span id="counter">Вопрос 1</span>
+            <span id="score">Баллы: 0</span>
         </div>
-        <div class="question-counter" id="question-counter">Вопрос 1/10</div>
-        <div class="question-text" id="question-text">
-            Загрузка вопроса...
+        
+        <div class="question-box" id="question-text">
+            Загрузка...
         </div>
-        <div class="answers-grid" id="answers-container">
+
+        <div class="options-grid" id="options-container">
             </div>
     </div>
 
     <div id="result-screen" class="screen hidden">
-        <div class="score-circle" id="final-score">0%</div>
-        <div class="result-message" id="result-message">Отличный результат!</div>
-        <p class="description" id="result-detail"></p>
-        <button class="btn-restart" onclick="quiz.init()">Пройти заново</button>
+        <h1>Тест завершен</h1>
+        <div class="score-display" id="final-percent">0%</div>
+        <p id="final-text">Вы ответили верно на X вопросов.</p>
+        <button class="btn" onclick="app.restart()">Пройти заново</button>
     </div>
 </div>
 
 <script>
     /**
-     * Database of terms based on provided lifesafety_terms.docx
-     * Using citations to map logic directly to source.
+     * Полная база данных терминов из lifesafety_terms.docx
+     * Определения приведены в полное соответствие с источником.
      */
-    const termsDB = [
-        { term: "Техносфера", def: "Искусственно созданная человеком среда обитания, включающая здания, сооружения, транспорт, коммуникации и технологическое оборудование." [cite_start]}, // [cite: 1]
-        { term: "Гомосфера", def: "Область пространства вокруг человека, в которой находятся рабочие места и бытовые условия проживания." [cite_start]}, // [cite: 3]
-        { term: "Ноксосфера", def: "Область, которая включает факторы, способные вызвать заболевание организма или привести к несчастному случаю на производстве." [cite_start]}, // [cite: 5]
-        { term: "Шаговое напряжение", def: "Потенциал электрического напряжения, возникающий между ногами человека, стоящего на земле вблизи повреждённого электроприбора." [cite_start]}, // [cite: 45]
-        { term: "Вредные вещества", def: "Соединения и элементы, негативно влияющие на здоровье человека при контакте, попадании внутрь организма или длительном пребывании." [cite_start]}, // [cite: 47]
-        { term: "ПДК", def: "Максимальное содержание загрязняющего вещества в воздухе, воде или почве, длительное пребывание в котором не вызывает отрицательных эффектов." [cite_start]}, // [cite: 49]
-        { term: "Физиология труда", def: "Наука, изучающая реакции организма на трудовую нагрузку и определяющая оптимальные режимы работы и отдыха." [cite_start]}, // [cite: 50]
-        { term: "Работоспособность", def: "Способность человека продуктивно выполнять работу определённого объёма и интенсивности в заданных временных рамках." [cite_start]}, // [cite: 56]
-        { term: "Микроклимат", def: "Совокупность метеорологических характеристик воздушной среды помещения, влияющих на самочувствие и производительность человека." [cite_start]}, // [cite: 58]
-        { term: "Эргономика", def: "Дисциплина, занимающаяся проектированием рабочих пространств, инструментов и процессов для обеспечения комфорта и безопасности." [cite_start]}, // [cite: 60]
-        { term: "Охрана труда", def: "Комплекс правовых, социально-экономических и санитарно-гигиенических мероприятий, обеспечивающих сохранение здоровья сотрудников." [cite_start]}, // [cite: 62]
-        { term: "Пожар", def: "Неконтролируемое распространение огня, сопровождающееся повреждением материальных ценностей и угрозой жизни людей." [cite_start]}, // [cite: 63]
-        { term: "Пожарная профилактика", def: "Система действий, направленная на предупреждение возникновения пожаров путём соблюдения нормативных требований." [cite_start]}, // [cite: 64]
-        { term: "Авария", def: "Внезапное нарушение нормального функционирования технического устройства или системы, связанное с разрушением сооружений." [cite_start]}, // [cite: 65]
-        { term: "Катастрофа", def: "Крупномасштабная авария или природное явление, повлекшие значительные разрушения, жертвы и серьёзный экономический ущерб." [cite_start]}, // [cite: 66]
-        { term: "Стихийное бедствие", def: "Внезапно возникшее экстремальное природное событие (землетрясение, цунами, наводнение), несущее опасность людям." [cite_start]}, // [cite: 67]
-        { term: "Эвакуация", def: "Организованное срочное удаление людей из районов, подвергшихся воздействию стихии, аварии или иной ЧС." [cite_start]}, // [cite: 68]
-        { term: "Рассредоточение", def: "Заблаговременное распределение важных объектов и учреждений по территории, снижающее риск одновременного ущерба." [cite_start]}, // [cite: 69]
-        { term: "Отселение", def: "Временная или постоянная миграция населения из района, подверженного воздействию экологической катастрофы." [cite_start]}, // [cite: 70]
-        { term: "Дегазация", def: "Процедура нейтрализации ядовитых газов и паров в помещениях, оборудовании и средствах индивидуальной защиты." [cite_start]}, // [cite: 71]
-        { term: "Дезактивация", def: "Удаление радиоактивных частиц и загрязнителей с местности, транспортных средств и иных объектов." [cite_start]}, // [cite: 72]
-        { term: "Дезинфекция", def: "Уничтожение болезнетворных бактерий и вирусов на поверхности и предметах быта с целью предупреждения инфекций." [cite_start]}, // [cite: 73]
-        { term: "Скрытый пожар", def: "Возгорание, которое начинается незаметно внутри конструкций зданий, оборудования или материалов." [cite_start]}, // [cite: 29]
-        { term: "Горение", def: "Химический процесс окисления топлива кислородом воздуха, сопровождающийся выделением тепла и света." [cite_start]}, // [cite: 36]
-        { term: "Безопасность", def: "Состояние защищённости человека, общества и окружающей среды от угроз и воздействий." [cite_start]}, // [cite: 38]
-        { term: "Опасность", def: "Совокупность факторов, угрожающих здоровью, жизни, состоянию имущества или экосистемы." [cite_start]}, // [cite: 40]
-        { term: "Окружающая среда", def: "Система природных и антропогенных компонентов, взаимодействующих друг с другом и влияющих на жизнь человека." [cite_start]}, // [cite: 42]
-        { term: "Риск", def: "Вероятность наступления неблагоприятных событий и последствия этих событий для человека, природы или экономики." [cite_start]} // [cite: 43]
+    const database = [
+        { 
+            term: "Техносфера", 
+            def: "представляет собой искусственно созданную человеком среду обитания, включающую здания, сооружения, транспорт, коммуникации и технологическое оборудование." 
+        },
+        { 
+            term: "Гомосфера", 
+            def: "область пространства вокруг человека, в которой находятся рабочие места и бытовые условия проживания." 
+        },
+        { 
+            term: "Ноксосфера", 
+            def: "включает факторы, способные вызвать заболевание организма или привести к несчастному случаю на производстве." 
+        },
+        { 
+            term: "Производственный травматизм", 
+            def: "возникает вследствие несоблюдения норм охраны труда и техники безопасности." 
+        },
+        { 
+            term: "Скрытый пожар", 
+            def: "это возгорание, которое начинается незаметно внутри конструкций зданий, оборудования или материалов." 
+        },
+        { 
+            term: "Горение", 
+            def: "химический процесс окисления топлива кислородом воздуха, сопровождающийся выделением тепла и света." 
+        },
+        { 
+            term: "Безопасность", 
+            def: "состояние защищённости человека, общества и окружающей среды от угроз и воздействий, которые могут нанести ущерб здоровью, имуществу или экологии." 
+        },
+        { 
+            term: "Опасность", 
+            def: "совокупность факторов, угрожающих здоровью, жизни, состоянию имущества или экосистемы." 
+        },
+        { 
+            term: "Окружающая среда", 
+            def: "система природных и антропогенных компонентов (воздух, вода, почва, флора, фауна, объекты строительства и промышленности), взаимодействующих друг с другом и оказывающих прямое или косвенное влияние на жизнь и здоровье человека." 
+        },
+        { 
+            term: "Риск", 
+            def: "вероятность наступления неблагоприятных событий и последствия этих событий для человека, природы или экономики." 
+        },
+        { 
+            term: "Шаговое напряжение", 
+            def: "потенциал электрического напряжения, возникающий между ногами человека, стоящего на земле вблизи повреждённого электроприбора или оборванного провода." 
+        },
+        { 
+            term: "Вредные вещества", 
+            def: "соединения и элементы, негативно влияющие на здоровье человека при контакте, попадании внутрь организма или длительном пребывании в среде, содержащей эти вещества." 
+        },
+        { 
+            term: "Предельно допустимая концентрация (ПДК)", 
+            def: "максимальное содержание загрязняющего вещества в воздухе, воде или почве, длительное пребывание в котором не вызывает отрицательных эффектов на здоровье человека." 
+        },
+        { 
+            term: "Физиология труда", 
+            def: "наука, изучающая реакции организма на трудовую нагрузку, определяющая оптимальные режимы работы и отдыха, способствующие сохранению работоспособности и профилактике переутомления." 
+        },
+        { 
+            term: "Классы условий труда", 
+            def: "критерии классификации условий трудовой деятельности по уровню воздействия вредных и опасных факторов." 
+        },
+        { 
+            term: "Работоспособность", 
+            def: "способность человека продуктивно выполнять работу определённого объёма и интенсивности в заданных временных рамках." 
+        },
+        { 
+            term: "Микроклимат", 
+            def: "совокупность метеорологических характеристик воздушной среды помещения, влияющих на самочувствие и производительность человека." 
+        },
+        { 
+            term: "Эргономика", 
+            def: "дисциплина, занимающаяся проектированием рабочих пространств, инструментов и процессов таким образом, чтобы обеспечить комфорт, эффективность и безопасность труда." 
+        },
+        { 
+            term: "Охрана труда", 
+            def: "комплекс правовых, социально-экономических, санитарно-гигиенических, лечебно-профилактических и реабилитационных мероприятий, обеспечивающих сохранение здоровья и работоспособности сотрудников на рабочем месте." 
+        },
+        { 
+            term: "Пожар", 
+            def: "неконтролируемое распространение огня, сопровождающееся повреждением материальных ценностей, нарушением экологического равновесия и угрозой жизни и здоровью людей." 
+        },
+        { 
+            term: "Пожарная профилактика", 
+            def: "система действий, направленная на предупреждение возникновения пожаров путём соблюдения нормативных требований, инструкций и стандартов безопасности." 
+        },
+        { 
+            term: "Авария", 
+            def: "внезапное нарушение нормального функционирования технического устройства, процесса или системы, связанное с разрушением сооружений, выходом из строя механизмов и созданием угрозы жизни и здоровью людей." 
+        },
+        { 
+            term: "Катастрофа", 
+            def: "крупномасштабная авария или природное явление, повлекшие значительные разрушения, жертвы среди населения и серьёзный экономический ущерб." 
+        },
+        { 
+            term: "Стихийное бедствие", 
+            def: "внезапно возникшее экстремальное природное событие (землетрясение, цунами, шторм, наводнение), несущее опасность людям и инфраструктуре." 
+        },
+        { 
+            term: "Эвакуация", 
+            def: "организованное срочное удаление людей из районов, подвергшихся воздействию стихии, аварии или иной чрезвычайной ситуации." 
+        },
+        { 
+            term: "Рассредоточение", 
+            def: "заблаговременное распределение важных объектов и учреждений (например, промышленных предприятий, медицинских центров) по территории, снижающее риск одновременного ущерба в результате крупных катастроф." 
+        },
+        { 
+            term: "Отселение", 
+            def: "временная или постоянная миграция населения из района, подверженного воздействию экологической катастрофы, природного катаклизма или военных действий." 
+        },
+        { 
+            term: "Дегазация", 
+            def: "процедура нейтрализации ядовитых газов и паров в помещениях, оборудовании и средствах индивидуальной защиты." 
+        },
+        { 
+            term: "Дезактивация", 
+            def: "удаление радиоактивных частиц и загрязнителей с местности, транспортных средств, продуктов питания и иных объектов, подвергшихся радиоактивному загрязнению." 
+        },
+        { 
+            term: "Дезинфекция", 
+            def: "уничтожение болезнетворных бактерий и вирусов на поверхности, предметах быта, продуктах питания с целью предупреждения инфекционных заболеваний." 
+        }
     ];
 
-    const quiz = {
+    const app = {
         questions: [],
-        currentQuestionIndex: 0,
+        currentIndex: 0,
         score: 0,
-        isAnswering: false,
-
-        // HTML Elements
-        ui: {
-            startScreen: document.getElementById('start-screen'),
-            quizScreen: document.getElementById('quiz-screen'),
-            resultScreen: document.getElementById('result-screen'),
-            questionText: document.getElementById('question-text'),
-            answersContainer: document.getElementById('answers-container'),
-            counter: document.getElementById('question-counter'),
-            progressBar: document.getElementById('progress-bar'),
-            finalScore: document.getElementById('final-score'),
-            resultMessage: document.getElementById('result-message'),
-            resultDetail: document.getElementById('result-detail')
-        },
-
-        // Fisher-Yates Shuffle Algorithm
-        shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+        
+        // HTML Elements cache
+        els: {
+            start: document.getElementById('start-screen'),
+            quiz: document.getElementById('quiz-screen'),
+            result: document.getElementById('result-screen'),
+            totalCount: document.getElementById('total-q-count'),
+            qText: document.getElementById('question-text'),
+            optsContainer: document.getElementById('options-container'),
+            counter: document.getElementById('counter'),
+            score: document.getElementById('score'),
+            finalPercent: document.getElementById('final-percent'),
+            finalText: document.getElementById('final-text')
         },
 
         init() {
-            this.ui.startScreen.classList.remove('hidden');
-            this.ui.quizScreen.classList.add('hidden');
-            this.ui.resultScreen.classList.add('hidden');
-            this.score = 0;
-            this.currentQuestionIndex = 0;
+            this.els.totalCount.innerText = database.length;
         },
 
         start() {
-            // Prepare questions: shuffle entire DB
-            this.questions = this.shuffleArray([...termsDB]);
+            // Shuffle database for this round
+            this.questions = [...database].sort(() => Math.random() - 0.5);
+            this.currentIndex = 0;
+            this.score = 0;
             
-            this.ui.startScreen.classList.add('hidden');
-            this.ui.quizScreen.classList.remove('hidden');
-            this.showQuestion();
+            this.els.start.classList.add('hidden');
+            this.els.result.classList.add('hidden');
+            this.els.quiz.classList.remove('hidden');
+            
+            this.renderQuestion();
         },
 
-        showQuestion() {
-            this.isAnswering = false;
-            const currentQ = this.questions[this.currentQuestionIndex];
-            
-            // Update UI Counters
-            this.ui.counter.innerText = `Вопрос ${this.currentQuestionIndex + 1} / ${this.questions.length}`;
-            const progressPercent = ((this.currentQuestionIndex) / this.questions.length) * 100;
-            this.ui.progressBar.style.width = `${progressPercent}%`;
+        restart() {
+            this.init();
+            this.els.result.classList.add('hidden');
+            this.els.start.classList.remove('hidden');
+        },
 
-            // Set text
-            this.ui.questionText.innerText = currentQ.def;
+        renderQuestion() {
+            const currentQ = this.questions[this.currentIndex];
+            
+            // Update UI
+            this.els.counter.innerText = `Вопрос ${this.currentIndex + 1}/${this.questions.length}`;
+            this.els.score.innerText = `Баллы: ${this.score}`;
+            
+            // Format definition (Capitalize first letter if needed)
+            let defText = currentQ.def;
+            defText = defText.charAt(0).toUpperCase() + defText.slice(1);
+            this.els.qText.innerText = defText;
 
-            // Generate Answers
-            this.ui.answersContainer.innerHTML = '';
+            // Generate Options
+            this.els.optsContainer.innerHTML = '';
             
-            // 1 Correct + 3 Wrong
-            let answers = [currentQ.term];
+            // Create options array: 1 correct + 3 random distinct distractors
+            let options = [currentQ.term];
+            let pool = database.filter(i => i.term !== currentQ.term);
             
-            // Get distractors
-            const distractors = termsDB
-                .filter(item => item.term !== currentQ.term)
-                .map(item => item.term);
+            // Shuffle pool and take 3
+            pool.sort(() => Math.random() - 0.5);
+            options.push(...pool.slice(0, 3).map(i => i.term));
             
-            this.shuffleArray(distractors);
-            answers.push(...distractors.slice(0, 3)); // Add 3 random wrong answers
-            this.shuffleArray(answers); // Shuffle the position of correct answer
+            // Shuffle options for display
+            options.sort(() => Math.random() - 0.5);
 
-            answers.forEach(ans => {
+            options.forEach(optText => {
                 const btn = document.createElement('button');
-                btn.className = 'answer-btn';
-                btn.innerText = ans;
-                btn.onclick = () => this.handleAnswer(btn, ans, currentQ.term);
-                this.ui.answersContainer.appendChild(btn);
+                btn.className = 'option-btn';
+                btn.innerText = optText;
+                btn.onclick = (e) => this.handleAnswer(e.target, optText, currentQ.term);
+                this.els.optsContainer.appendChild(btn);
             });
         },
 
         handleAnswer(btn, selected, correct) {
-            if (this.isAnswering) return;
-            this.isAnswering = true;
-
-            const buttons = this.ui.answersContainer.querySelectorAll('.answer-btn');
-            
-            // Disable all buttons
-            buttons.forEach(b => b.classList.add('disabled'));
+            // Prevent double clicking
+            const allBtns = this.els.optsContainer.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.classList.add('disabled'));
 
             if (selected === correct) {
                 btn.classList.add('correct');
                 this.score++;
             } else {
                 btn.classList.add('wrong');
-                // Highlight the correct one
-                buttons.forEach(b => {
+                // Highlight correct
+                allBtns.forEach(b => {
                     if (b.innerText === correct) b.classList.add('correct');
                 });
             }
 
-            // Wait and go to next
+            // Delay for next question
             setTimeout(() => {
-                this.currentQuestionIndex++;
-                if (this.currentQuestionIndex < this.questions.length) {
-                    this.showQuestion();
+                this.currentIndex++;
+                if (this.currentIndex < this.questions.length) {
+                    this.renderQuestion();
                 } else {
-                    this.endGame();
+                    this.finish();
                 }
-            }, 1200); // 1.2 second delay
+            }, 1200);
         },
 
-        endGame() {
-            this.ui.quizScreen.classList.add('hidden');
-            this.ui.resultScreen.classList.remove('hidden');
+        finish() {
+            this.els.quiz.classList.add('hidden');
+            this.els.result.classList.remove('hidden');
             
             const percent = Math.round((this.score / this.questions.length) * 100);
-            this.ui.finalScore.innerText = `${percent}%`;
-            this.ui.resultDetail.innerText = `Правильно: ${this.score} из ${this.questions.length}`;
-
-            if (percent === 100) {
-                this.ui.resultMessage.innerText = "Идеально!";
-                this.ui.finalScore.style.background = "#2E7D32";
-            } else if (percent >= 80) {
-                this.ui.resultMessage.innerText = "Отличный результат!";
-                this.ui.finalScore.style.background = "#4CAF50";
-            } else if (percent >= 50) {
-                this.ui.resultMessage.innerText = "Неплохо, но можно лучше.";
-                this.ui.finalScore.style.background = "#FF9800";
-            } else {
-                this.ui.resultMessage.innerText = "Стоит повторить теорию.";
-                this.ui.finalScore.style.background = "#F44336";
-            }
+            this.els.finalPercent.innerText = `${percent}%`;
+            this.els.finalText.innerText = `Вы ответили верно на ${this.score} из ${this.questions.length} вопросов.`;
+            
+            // Color coding result
+            if(percent >= 80) this.els.finalPercent.style.color = 'var(--success)';
+            else if(percent >= 50) this.els.finalPercent.style.color = '#ffc107'; // orange
+            else this.els.finalPercent.style.color = 'var(--error)';
         }
     };
 
-    // Initialize on load
-    window.onload = () => quiz.init();
+    // Run init on load
+    window.onload = () => app.init();
 
 </script>
 </body>
