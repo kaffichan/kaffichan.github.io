@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>БЖД: Определения (Mobile Ver.)</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --correct-color: #4caf50;
+            --incorrect-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Убирает подсветку при тапе на мобильных */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Центровка по вертикали */
+            padding: 10px;
+        }
+
+        /* Адаптивный контейнер */
+        .container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            /* Для маленьких экранов растягиваем на почти всю высоту, если контента много */
+            max-height: 95vh; 
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #5b42a7;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 22px;
+            line-height: 1.3;
+        }
+
+        /* Прогресс-бар */
+        .progress-container {
+            margin-bottom: 15px;
+        }
+        
+        .progress-text {
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .progress {
+            background: #e0e0e0;
+            border-radius: 8px;
+            height: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--primary-gradient);
+            height: 100%;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* Стили вопроса */
+        .question-box {
+            background: #f8f9fa;
+            border-left: 4px solid #764ba2;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+        }
+
+        .question-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #764ba2;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .question {
+            font-size: 17px;
+            color: #2c3e50;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* Сетка вариантов ответов */
+        .options {
+            display: grid;
+            grid-template-columns: 1fr; /* Одна колонка на мобильных */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background: #fff;
+            border: 1px solid #dcdcdc;
+            border-radius: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 54px; /* Удобно для пальца */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Состояния при наведении (для десктопа) и активные (для тач) */
+        @media (hover: hover) {
+            .option:hover:not(.disabled) {
+                border-color: #667eea;
+                background: #f0f4ff;
+            }
+        }
+
+        .option:active:not(.disabled) {
+            transform: scale(0.98);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: var(--correct-color);
+            color: white;
+            border-color: var(--correct-color);
+        }
+
+        .option.incorrect {
+            background: var(--incorrect-color);
+            color: white;
+            border-color: var(--incorrect-color);
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Кнопки управления */
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3);
+            transition: opacity 0.2s;
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Блок с обратной связью */
+        .feedback {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .feedback.incorrect {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Результаты */
+        .result {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(118, 75, 162, 0.4);
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Медиа-запрос для ПК, чтобы выглядело прилично на больших экранах */
+        @media (min-width: 768px) {
+            .options {
+                grid-template-columns: 1fr 1fr; /* Две колонки на ПК */
+            }
+            .container {
+                padding: 40px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ БЖД: Угадайте термин</h1>
+        
+        <div id="start">
+            <p style="text-align: center; color: #666; font-size: 16px; margin-bottom: 30px; line-height: 1.6;">
+                Вам будет показано определение.<br>
+                Выберите правильный термин из списка.<br>
+                Всего вопросов: <strong>38</strong>
+            </p>
+            <button class="btn" onclick="startQuiz()">Начать тест</button>
+        </div>
+
+        <div id="quiz" style="display: none;">
+            <div class="progress-container">
+                <div class="progress-text" id="progressText">1 / 38</div>
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <span class="question-label">Определение:</span>
+                <div class="question" id="question"></div>
+            </div>
+
+            <div class="options" id="options"></div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <button class="btn" id="nextBtn" style="display: none;">Следующий вопрос</button>
+        </div>
+
+        <div id="result" style="display: none;" class="result">
+            <h2>Тест завершён!</h2>
+            <div class="score-circle" id="score"></div>
+            <p class="result-message" id="resultMessage" style="margin-bottom: 25px; color: #555;"></p>
+            <button class="btn" onclick="restartQuiz()">Пройти заново</button>
+        </div>
+    </div>
+
+    <script>
+        const terms = {
+            "Безопасность жизнедеятельности": "состояние защищённости человека и общества от угроз, обеспечивающее нормальное и здоровое существование",
+            "Безопасность": "состояние защищённости от опасностей, угроз и рисков",
+            "Техносфера": "совокупность всех искусственных объектов и систем, созданных человеком на Земле",
+            "Опасность": "потенциальная возможность причинения вреда человеку, природе или имуществу",
+            "Гомосфера": "нижняя часть атмосферы с однородным составом газов",
+            "Ноксосфера": "совокупность всех негативных антропогенных воздействий на окружающую среду",
+            "Окружающая среда": "совокупность природных и искусственных условий, в которых существует человек",
+            "Вредные факторы": "факторы, способные вызвать ухудшение здоровья или повреждение организма",
+            "Опасные факторы": "факторы, способные вызвать травмы, болезни или смерть",
+            "Физические опасности": "опасности, связанные с воздействием физических факторов (шум, вибрация, радиация)",
+            "Социальные опасности": "угрозы, связанные с социальными конфликтами, преступностью, стрессами",
+            "Биологические опасности": "угрозы, связанные с воздействием живых организмов (бактерии, вирусы, паразиты)",
+            "Риск": "вероятность наступления опасного события и его возможные последствия",
+            "Электробезопасность": "комплекс мер, направленных на защиту от поражения электрическим током",
+            "Шаговое напряжение": "разность потенциалов между двумя точками на земле, на которые опирается человек",
+            "Вредные вещества": "химические или биологические вещества, негативно влияющие на здоровье",
+            "Антагонизм": "взаимодействие, при котором эффект одного фактора ослабляет действие другого",
+            "Синергизм": "взаимодействие, при котором совместное действие факторов усиливает общий эффект",
+            "Предельно допустимая концентрация (ПДК)": "максимальная концентрация вещества в воздухе, безопасная для человека",
+            "Пожар": "неконтролируемое горение, причиняющее ущерб",
+            "Пожарная профилактика": "мероприятия по предупреждению возникновения и распространения пожаров",
+            "Горение": "химический процесс окисления с выделением тепла и света",
+            "Признаки скрытого пожара": "признаки возгорания без открытого пламени (дым, запах гари, высокая температура)",
+            "Поражающие факторы пожара": "огонь, дым, высокая температура, токсичные газы",
+            "Виды огнетушителей": "устройства для тушения пожаров (водные, порошковые, углекислотные и др.)",
+            "Авария": "внезапное событие, приводящее к повреждениям и нарушению нормальной работы",
+            "Катастрофа": "масштабное разрушительное событие с серьёзными последствиями",
+            "Чрезвычайная ситуация": "ситуация, угрожающая жизни и здоровью людей, окружающей среде и имуществу",
+            "Стихийное бедствие": "природное явление, вызывающее значительные разрушения и жертвы",
+            "Эвакуация": "организованное выведение людей из опасной зоны",
+            "Рассредоточение": "уменьшение плотности населения в опасной зоне для снижения риска",
+            "Отселение": "временное или постоянное переселение людей из опасных районов",
+            "Дегазация": "удаление или нейтрализация токсичных газов",
+            "Дезактивация": "удаление радиоактивных веществ с поверхности объектов",
+            "Дезинфекция": "уничтожение патогенных микроорганизмов",
+            "Дератизация": "борьба с грызунами",
+            "Средства индивидуальной защиты (СИЗ)": "устройства и предметы, защищающие человека от вредных факторов (маски, перчатки, каски)",
+            "Средства коллективной защиты": "сооружения и устройства, обеспечивающие защиту групп людей (убежища, фильтрующие установки)"
+        };
+
+        let questions = [];
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function shuffle(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function generateQuestions() {
+            questions = [];
+            const termKeys = Object.keys(terms); // Список всех терминов
+            const shuffledTerms = shuffle(termKeys);
+
+            // ЛОГИКА ИЗМЕНЕНА:
+            // Вопрос = Определение (terms[term])
+            // Правильный ответ = Термин (term)
+            
+            shuffledTerms.forEach(term => {
+                const definition = terms[term]; // Это будет вопросом
+                const correctAnswer = term;     // Это правильный ответ в кнопке
+
+                // Ищем неправильные ответы среди других терминов
+                const wrongAnswers = shuffle(
+                    termKeys.filter(key => key !== correctAnswer)
+                ).slice(0, 3);
+                
+                const options = shuffle([correctAnswer, ...wrongAnswers]);
+
+                questions.push({
+                    questionText: definition,
+                    correct: correctAnswer,
+                    options: options
+                });
+            });
+        }
+
+        function startQuiz() {
+            generateQuestions();
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+
+            document.getElementById('start').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+
+            showQuestion();
+        }
+
+        function showQuestion() {
+            answered = false;
+            const questionData = questions[currentQuestion];
+            
+            // Обновляем счетчик
+            document.getElementById('progressText').textContent = 
+                `Вопрос ${currentQuestion + 1} из ${questions.length}`;
+            
+            // Показываем определение
+            document.getElementById('question').textContent = questionData.questionText;
+            
+            // Прогресс бар
+            const progressPercent = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+
+            // Создаем кнопки с терминами
+            questionData.options.forEach((optionText, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = optionText;
+                // Добавляем обработчик, чтобы убрать задержку тапа на мобильных
+                optionDiv.ontouchstart = function() {}; 
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('feedback').className = 'feedback';
+            
+            // Прокрутка вверх при новом вопросе, если экран маленький
+            if(currentQuestion > 0 && window.innerWidth < 768) {
+                 document.querySelector('.container').scrollTo(0,0);
+            }
+        }
+
+        function selectOption(selectedIndex) {
+            if (answered) return;
+            answered = true;
+
+            const questionData = questions[currentQuestion];
+            const optionsElements = document.querySelectorAll('.option');
+            const selectedText = questionData.options[selectedIndex];
+            const isCorrect = selectedText === questionData.correct;
+
+            optionsElements.forEach((option, index) => {
+                option.classList.add('disabled');
+                
+                // Подсвечиваем правильный ответ зеленым
+                if (questionData.options[index] === questionData.correct) {
+                    option.classList.add('correct');
+                }
+                
+                // Если выбрали неправильный - его красным
+                if (index === selectedIndex && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            
+            if (isCorrect) {
+                score++;
+                feedback.className = 'feedback correct';
+                feedback.textContent = '✓ Верно!';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = `✗ Ошибка.<br>Правильный ответ: <b>${questionData.correct}</b>`;
+            }
+
+            document.getElementById('nextBtn').style.display = 'block';
+            
+            // Автоматическая прокрутка к кнопке "Далее" на мобильных
+            if (window.innerWidth < 768) {
+                setTimeout(() => {
+                    document.getElementById('nextBtn').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        });
+
+        function showResult() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('score').textContent = `${percentage}%`;
+
+            let message = '';
+            if (percentage >= 90) {
+                message = '🏆 Великолепно! Вы эксперт БЖД!';
+            } else if (percentage >= 70) {
+                message = '👍 Хороший результат! Вы разбираетесь в теме.';
+            } else if (percentage >= 50) {
+                message = '🤔 Неплохо, но стоит повторить термины.';
+            } else {
+                message = '📚 Рекомендуем пройти материал заново.';
+            }
+
+            document.getElementById('resultMessage').textContent = message;
+        }
+    </script>
+</body>
+</html>
