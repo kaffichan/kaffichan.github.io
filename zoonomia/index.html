@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        if (!/Android|webOS|iPhone|iPad|iPod|Blackberry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.location.replace("index_pc.html");
+        }
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zoonomia</title>
+    <link href="content/logo/favicon.ico" rel="icon" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <audio id="sfx-correct" src="content/sounds/correct.mp3"></audio>
+    <audio id="sfx-incorrect" src="content/sounds/incorrect.mp3"></audio>
+    <audio id="sfx-finish" src="content/sounds/finish.mp3"></audio>
+
+    <div id="app-container">
+        
+        <div id="loader">
+            <div class="logo-placeholder">
+                <img src="content/logo/ksavm.webp" alt="Логотип">
+            </div>
+            <h1>Zoonomia</h1>
+            <p style="opacity: 0.8;">КГАВМ</p>
+            <div class="spinner"></div>
+            <div class="loading-text">Загрузка атласов...</div>
+        </div>
+        
+        <div id="main-menu-screen" class="screen">
+            <div class="result-screen-content fade-in">
+                <div class="logo-placeholder" style="margin-bottom: 30px;">
+                    <img src="content/logo/ksavm.webp" alt="Логотип">
+                </div>
+                <h2 class="result-title" style="color: var(--ksau-blue); font-size: 2.5rem; margin-bottom: 5px;">Zoonomia</h2>
+                <p style="color: var(--text-light); margin-bottom: 40px; font-weight: 700;">КГАВМ</p>
+                
+                <div style="width: 100%; display: flex; flex-direction: column; gap: 15px; max-width: 300px;">
+                    <button class="btn btn-primary" onclick="App.showScreen('welcome-screen')">К выбору тем</button>
+                    <button class="btn btn-outline" onclick="App.showScreen('authors-screen')">Авторы</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="authors-screen" class="screen">
+            <div class="header-top">
+                <button class="btn-back" onclick="App.showScreen('main-menu-screen')">⬅</button>
+                <h2>О приложении</h2>
+                <div style="width: 24px;"></div>
+            </div>
+            <div class="sections-container fade-in" style="align-items: center; text-align: center; padding-top: 40px;">
+                <h3 style="margin-bottom: 20px; color: var(--text-dark);">Разработано для студентов КГАВМ</h3>
+                <p style="color: var(--text-light); margin-bottom: 10px; font-weight: 700;">Автор идеи и контента: [Ваше Имя]</p>
+                <p style="color: var(--text-light); margin-bottom: 30px; font-weight: 700;">Разработчик: <a href="https://github.com/kaffichan">kaffi</a></p>
+                
+                <div style="background-color: var(--white); border-radius: 16px; padding: 20px; border: 2px solid var(--locked-gray); font-size: 0.9rem; color: var(--text-light); text-align: left;">
+                    <strong>Юридическая информация:</strong><br><br>
+                    Данное приложение является образовательным проектом. Все материалы взяты из учебной литературы в некоммерческих целях.<br><br>
+                    © 2026 Zoonomia. Все права защищены.
+                </div>
+            </div>
+        </div>
+
+        <div id="welcome-screen" class="screen">
+            <div class="header-top">
+                <button class="btn-back" onclick="App.showScreen('main-menu-screen')">⬅</button>
+                <h2>Zoonomia</h2>
+                <div style="width: 24px; padding: 5px;"></div>
+            </div>
+            <div class="theme-list fade-in-slow" id="themes-container">
+            </div>
+        </div>
+
+        <div id="sections-screen" class="screen">
+            <div class="header-top">
+                <button class="btn-back" onclick="App.showScreen('welcome-screen')">⬅</button>
+                <h2 id="current-theme-title">Остеология</h2>
+                <div style="width: 24px;"></div>
+            </div>
+            <div class="sections-container fade-in" id="sections-container">
+            </div>
+            <div class="fade-bottom"></div>
+        </div>
+
+        <div id="map-screen" class="screen">
+            <div class="header-top">
+                <button class="btn-back" onclick="App.showScreen('sections-screen')">⬅</button>
+                <h2 id="current-section-title">Раздел</h2>
+                <div style="width: 24px;"></div>
+            </div>
+            <div class="path-container fade-in" id="path-container">
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen" style="z-index: 50;">
+            <div class="top-bar">
+                <button class="btn-close" onclick="App.showExitModal()">✖</button>
+                <div class="progress-container">
+                    <div class="progress-fill" id="progress-bar"></div>
+                </div>
+                <div class="lives-counter">
+                    ❤️ <span id="lives-count">3</span>
+                </div>
+            </div>
+
+            <div class="question-zone fade-in" id="question-zone">
+                <h3 class="question-title" id="q-title">Вопрос...</h3>
+                
+                <div class="content-area">
+                    <div class="img-placeholder" id="q-image-container">
+                        <img id="q-image" src="" alt="Иллюстрация к вопросу">
+                    </div>
+                </div>
+
+                <div class="answers-grid" id="answers-grid">
+                </div>
+            </div>
+
+            <div class="bottom-panel" id="bottom-panel">
+                <div class="feedback-msg correct-msg">✅ Отлично!</div>
+                <div class="feedback-msg incorrect-msg">❌ Правильный ответ: <span id="correct-answer-text" style="margin-left: 5px;"></span></div>
+                <button class="btn btn-primary" id="main-action-btn" disabled onclick="App.handleMainAction()">Проверить</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <div class="result-screen-content fade-in">
+                <div class="result-icon">🏆</div>
+                <h2 class="result-title">Уровень пройден!</h2>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="res-score">100%</span>
+                        <span class="stat-label">Точность</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="res-lives">3</span>
+                        <span class="stat-label">Жизни</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="App.returnToMap()">Продолжить</button>
+            </div>
+        </div>
+
+        <div id="defeat-screen" class="screen">
+            <div class="result-screen-content fade-in">
+                <div class="result-icon">💔</div>
+                <h2 class="defeat-title">Уровень провален</h2>
+                <p style="color: var(--text-light); margin-bottom: 30px; font-weight: 700;">Жизни закончились. Повторение — мать учения!</p>
+                <div style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
+                    <button class="btn btn-primary" onclick="App.retryLevel()">Попробовать снова</button>
+                    <button class="btn btn-outline" onclick="App.returnToMap()">На карту</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="exit-modal" class="modal-overlay">
+            <div class="modal-box">
+                <h3 class="modal-title">Прервать урок?</h3>
+                <p class="modal-text">Прогресс этого уровня будет обнулён.</p>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="App.hideExitModal()">Остаться</button>
+                    <button class="btn btn-danger" onclick="App.confirmExit()">Выйти</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const GameData = {
+            themes: [
+                {
+                    id: 'osteology',
+                    title: 'Остеология',
+                    subtitle: 'Наука о костях',
+                    icon: '🦴',
+                    locked: false,
+                    sections: [
+                        {
+                            id: 'spine',
+                            title: 'Позвоночный столб',
+                            icon: '🐾',
+                            locked: false,
+                            mascots: ['🦴', '🐕', '🐄'],
+                            levels: generateLevels('spine', 10, 3)
+                        },
+                        {
+                            id: 'skull',
+                            title: 'Череп',
+                            icon: '💀',
+                            locked: false,
+                            mascots: ['💀', '🧠', '👁️'],
+                            levels: generateLevels('skull', 10, 3)
+                        },
+                        {
+                            id: 'limbs',
+                            title: 'Конечности',
+                            icon: '🦵',
+                            locked: false,
+                            mascots: ['🦵', '🐾', '🐎'],
+                            levels: generateLevels('limbs', 10, 3)
+                        },
+                        {
+                            id: 'skeleton',
+                            title: 'Структура скелета',
+                            icon: '🔒',
+                            locked: true,
+                            devText: 'В разработке 🚧'
+                        },
+                        {
+                            id: 'bonepathology',
+                            title: 'Патологии костной ткани',
+                            icon: '🔒',
+                            locked: true,
+                            devText: 'В разработке 🚧'
+                        }
+                    ]
+                },
+                {
+                    id: 'splanchnology',
+                    title: 'Спланхнология',
+                    subtitle: 'Наука о внутренних органах',
+                    icon: '🔒',
+                    locked: true,
+                    sections: []
+                },
+                {
+                    id: 'myology',
+                    title: 'Миология',
+                    subtitle: 'Строение мышечной системы',
+                    icon: '🔒',
+                    locked: true,
+                    sections: []
+                },
+                {
+                    id: 'arthrology',
+                    title: 'Артрология',
+                    subtitle: 'Анатомия суставов',
+                    icon: '🔒',
+                    locked: true,
+                    sections: []
+                }
+            ]
+        };
+
+        function generateLevels(sectionId, totalCount, activeCount) {
+            let levels = [];
+            
+            const questionsData = {
+                'spine': [
+                    [
+                        { q: "Как называется первый шейный позвонок?", options: ["Атлант", "Эпистрофей", "Аксис", "Крестец"], correct: 0, img: "content/images/osteology/spine/atlante.jpg" },
+                        { q: "Сколько шейных позвонков у собаки и коровы?", options: ["5", "7", "10", "12"], correct: 1, img: "content/images/osteology/spine/cervicalvertibrae.jpg" },
+                        { q: "Какой отдел позвоночника следует за шейным?", options: ["Поясничный", "Крестцовый", "Грудной", "Хвостовой"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Грудной+отдел" },
+                        { q: "Отличительный признак грудных позвонков?", options: ["Наличие реберных ямок", "Огромный размер", "Отсутствие отростков", "Сращение костей"], correct: 0, img: "https://placehold.co/400x300/e5e5e5/777777?text=Реберные+ямки" },
+                        { q: "Как называется второй шейный позвонок?", options: ["Атлант", "Эпистрофей", "Прометей", "Атлас"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Эпистрофей" }
+                    ],
+                    [
+                        { q: "Функция зубовидного отростка (dens)?", options: ["Крепление мышц", "Защита мозга", "Ось для вращения атланта", "Опора для ребер"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Зубовидный+отросток" },
+                        { q: "Крестцовая кость (os sacrum) образована...", options: ["Свободными позвонками", "Сросшимися позвонками", "Хрящевой тканью", "Ребрами"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Крестцовая+кость" },
+                        { q: "У какого животного наибольшее число грудных позвонков?", options: ["Корова", "Свинья", "Собака", "Лошадь"], correct: 3, img: "https://placehold.co/400x300/e5e5e5/777777?text=Грудные+позвонки+лошади" },
+                        { q: "Форма поперечных отростков поясничных позвонков?", options: ["Короткие и круглые", "Длинные и плоские", "Отсутствуют", "Спиралевидные"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Поясничные+позвонки" },
+                        { q: "Чем отличаются хвостовые позвонки?", options: ["Редукцией дужек и отростков", "Сращением", "Наличием ребер", "Большим спинномозговым каналом"], correct: 0, img: "https://placehold.co/400x300/e5e5e5/777777?text=Хвостовые+позвонки" }
+                    ],
+                    [
+                        { q: "Позвоночная формула собаки (шейный-грудной-поясничный)?", options: ["7-13-7", "7-18-6", "7-14-6", "7-13-6"], correct: 0, img: "https://placehold.co/400x300/e5e5e5/777777?text=Скелет+собаки" },
+                        { q: "Какая связка проходит по дорсальной поверхности тел позвонков?", options: ["Надостистая", "Вентральная продольная", "Дорсальная продольная", "Выйная"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Связки+позвоночника" },
+                        { q: "Что находится между телами соседних позвонков?", options: ["Межпозвонковый диск", "Суставная капсула", "Связка", "Синовиальная жидкость"], correct: 0, img: "https://placehold.co/400x300/e5e5e5/777777?text=Межпозвонковый+диск" },
+                        { q: "Как называется отверстие, образованное дужкой и телом позвонка?", options: ["Межпозвонковое", "Спинномозговое (позвоночное)", "Овальное", "Яремное"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Позвоночное+отверстие" },
+                        { q: "У какого животного хорошо развита выйная связка?", options: ["Свинья", "Кошка", "Лошадь", "Собака"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Выйная+связка" }
+                    ]
+                ],
+                'skull': [
+                    [
+                        { q: "Какая кость образует затылочную часть черепа?", options: ["Теменная", "Затылочная", "Лобная", "Височная"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Затылочная+кость" },
+                        { q: "Где находится большое затылочное отверстие?", options: ["В височной кости", "В клиновидной кости", "В затылочной кости", "В небной кости"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Большое+затылочное+отверстие" },
+                        { q: "Какая кость не относится к мозговому отделу?", options: ["Лобная", "Затылочная", "Верхнечелюстная", "Теменная"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Отделы+черепа" },
+                        { q: "Что образует скуловую дугу?", options: ["Скуловая и височная кости", "Лобная и носовая", "Теменная и затылочная", "Резцовая и верхнечелюстная"], correct: 0, img: "https://placehold.co/400x300/e5e5e5/777777?text=Скуловая+дуга" },
+                        { q: "Самая крупная кость лицевого отдела?", options: ["Носовая", "Верхнечелюстная", "Слезная", "Резцовая"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Верхнечелюстная+кость" }
+                    ],
+                    [
+                        { q: "Единственная подвижная кость черепа?", options: ["Верхнечелюстная", "Нижнечелюстная", "Носовая", "Височная"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Нижняя+челюсть" },
+                        { q: "Где располагаются альвеолы зубов?", options: ["Носовая кость", "Лобная кость", "Резцовая, верхнечелюстная, нижнечелюстная", "Клиновидная кость"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Альвеолы" },
+                        { q: "В какой кости находится среднее и внутреннее ухо?", options: ["Затылочная", "Лобная", "Височная", "Теменная"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Височная+кость" },
+                        { q: "Что такое хоаны?", options: ["Глазницы", "Внутренние носовые отверстия", "Зубные ячейки", "Слуховые проходы"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Хоаны" },
+                        { q: "У каких животных есть роговые отростки?", options: ["Хищные", "Жвачные", "Лошади", "Свиньи"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Роговые+отростки" }
+                    ],
+                    [
+                        { q: "Что разделяет носовую полость на две половины?", options: ["Твердое небо", "Носовая перегородка", "Скуловая дуга", "Лобная кость"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Носовая+перегородка" },
+                        { q: "Какие кости образуют твердое небо?", options: ["Резцовая, верхнечелюстная, небная", "Лобная, носовая, слезная", "Клиновидная, решетчатая", "Височная, теменная"], correct: 0, img: "https://placehold.co/400x300/e5e5e5/777777?text=Твердое+небо" },
+                        { q: "Функция околоносовых пазух?", options: ["Защита мозга", "Крепление мышц", "Облегчение черепа и резонанс", "Кровоснабжение"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Околоносовые+пазухи" },
+                        { q: "У какого животного есть 'хоботная кость' (os rostri)?", options: ["Корова", "Лошадь", "Свинья", "Собака"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Хоботная+кость" },
+                        { q: "Шов между теменными костями называется:", options: ["Венечный", "Сагиттальный", "Ламбдовидный", "Чешуйчатый"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Черепные+швы" }
+                    ]
+                ],
+                'limbs': [
+                    [
+                        { q: "Какая кость образует плечевой пояс у большинства домашних животных?", options: ["Ключица", "Лопатка", "Воронья кость", "Грудина"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Лопатка" },
+                        { q: "Из каких костей состоит предплечье?", options: ["Плечевая", "Лучевая и локтевая", "Запястье", "Бедренная"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Кости+предплечья" },
+                        { q: "Где находится локтевой отросток?", options: ["На лучевой кости", "На локтевой кости", "На плечевой кости", "На лопатке"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Локтевой+отросток" },
+                        { q: "Кости запястья (carpus) относятся к...", options: ["Длинным трубчатым", "Коротким губчатым", "Плоским", "Смешанным"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Кости+запястья" },
+                        { q: "Сколько пальцев опирается на землю у лошади?", options: ["Один (третий)", "Два (третий и четвертый)", "Четыре", "Пять"], correct: 0, img: "https://placehold.co/400x300/e5e5e5/777777?text=Копыто+лошади" }
+                    ],
+                    [
+                        { q: "Из каких костей состоит тазовая кость?", options: ["Подвздошная, седалищная, лонная", "Бедренная, большеберцовая", "Крестец, копчик", "Лопатка, ключица"], correct: 0, img: "https://placehold.co/400x300/e5e5e5/777777?text=Тазовая+кость" },
+                        { q: "Самая крупная трубчатая кость организма?", options: ["Плечевая", "Большеберцовая", "Бедренная", "Лучевая"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Бедренная+кость" },
+                        { q: "Что такое надколенник (patella)?", options: ["Трубчатая кость", "Плоская кость", "Крупнейшая сесамовидная кость", "Часть таза"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Надколенник" },
+                        { q: "Из каких костей состоит голень?", options: ["Бедренная", "Большеберцовая и малоберцовая", "Лучевая и локтевая", "Заплюсна"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Кости+голени" },
+                        { q: "Сустав между бедром и голенью?", options: ["Тазобедренный", "Коленный", "Скакательный", "Запястный"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Коленный+сустав" }
+                    ],
+                    [
+                        { q: "Скакательный сустав - это синоним...", options: ["Коленного сустава", "Заплюсневого сустава", "Тазобедренного", "Путового"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Скакательный+сустав" },
+                        { q: "Пяточная кость входит в состав...", options: ["Запястья", "Заплюсны (предплюсны)", "Пясти", "Плюсны"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Пяточная+кость" },
+                        { q: "Третья (дистальная) фаланга пальца у лошади называется:", options: ["Путовая кость", "Венечная кость", "Копытная кость", "Сесамовидная кость"], correct: 2, img: "https://placehold.co/400x300/e5e5e5/777777?text=Фаланги+пальца+лошади" },
+                        { q: "Сколько пальцев у коровы (парнокопытное)?", options: ["1", "2", "4", "5"], correct: 1, img: "https://placehold.co/400x300/e5e5e5/777777?text=Копыто+коровы" },
+                        { q: "Функция сесамовидных костей?", options: ["Защита сухожилий и изменение угла тяги мышц", "Кроветворение", "Опора тела", "Соединение позвонков"], correct: 0, img: "https://placehold.co/400x300/e5e5e5/777777?text=Сесамовидные+кости" }
+                    ]
+                ]
+            };
+
+            for(let i = 0; i < totalCount; i++) {
+                const isActive = i < activeCount;
+                levels.push({
+                    id: `${sectionId}_lvl_${i+1}`,
+                    numericId: i+1,
+                    type: isActive ? "active" : "locked",
+                    questions: isActive ? questionsData[sectionId][i].map(q => ({
+                        ...q,
+                        img: q.img || `https://placehold.co/400x300/e5e5e5/777777?text=Нет+изображения` 
+                    })) : []
+                });
+            }
+            return levels;
+        }
+
+
+        const App = {
+            state: {
+                progress: [],
+                currentTheme: null,
+                currentSection: null,
+                currentLevel: null,
+                questionIndex: 0,
+                lives: 3,
+                selectedAnswer: null,
+                isAnswerChecked: false,
+                correctAnswersInLevel: 0
+            },
+
+            init() {
+                this.loadProgress();
+                this.renderThemes();
+                
+                setTimeout(() => {
+                    const loader = document.getElementById('loader');
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        this.showScreen('main-menu-screen');
+                    }, 800);
+                }, 2000);
+            },
+
+            setCookie(name, value, days) {
+                let expires = "";
+                if (days) {
+                    const date = new Date();
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toUTCString();
+                }
+                document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+            },
+            
+            getCookie(name) {
+                const nameEQ = name + "=";
+                const ca = document.cookie.split(';');
+                for(let i=0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+                }
+                return null;
+            },
+
+            loadProgress() {
+                const saved = localStorage.getItem('ksavm_progress_v2') || this.getCookie('ksavm_progress_v2');
+                
+                if (saved) {
+                    this.state.progress = saved.split(',').filter(item => item.trim() !== '');
+                } else {
+                    this.state.progress = [];
+                }
+            },
+
+            saveProgress(levelId) {
+                if (!this.state.progress.includes(levelId)) {
+                    this.state.progress.push(levelId);
+                    
+                    const progressString = this.state.progress.join(',');
+                    
+                    localStorage.setItem('ksavm_progress_v2', progressString);
+                    this.setCookie('ksavm_progress_v2', progressString, 365);
+                }
+            },
+
+            showScreen(screenId) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                const screen = document.getElementById(screenId);
+                screen.classList.add('active');
+                
+                const animators = screen.querySelectorAll('.fade-in, .fade-in-slow');
+                animators.forEach(el => {
+                    el.style.animation = 'none';
+                    void el.offsetWidth; // trigger reflow
+                    el.style.animation = null;
+                });
+            },
+
+            playSound(id) {
+                try {
+                    const audio = document.getElementById(id);
+                    if(audio) {
+                        audio.currentTime = 0;
+                        audio.play().catch(() => {});
+                    }
+                } catch(e) {}
+            },
+
+            renderThemes() {
+                const container = document.getElementById('themes-container');
+                container.innerHTML = '';
+
+                GameData.themes.forEach(theme => {
+                    const div = document.createElement('div');
+                    div.className = `card ${theme.locked ? 'locked' : 'active-card'}`;
+                    
+                    div.innerHTML = `
+                        <div class="card-icon">${theme.icon}</div>
+                        <div class="card-content">
+                            <div class="card-title">${theme.title}</div>
+                            <div class="card-subtitle">${theme.locked ? theme.devText || 'Закрыто' : theme.subtitle}</div>
+                        </div>
+                    `;
+
+                    if (!theme.locked) {
+                        div.onclick = () => this.openTheme(theme.id);
+                    }
+
+                    container.appendChild(div);
+                });
+            },
+
+            openTheme(themeId) {
+                this.state.currentTheme = GameData.themes.find(t => t.id === themeId);
+                document.getElementById('current-theme-title').innerText = this.state.currentTheme.title;
+                this.renderSections();
+                this.showScreen('sections-screen');
+            },
+
+            renderSections() {
+                const container = document.getElementById('sections-container');
+                container.innerHTML = '';
+
+                this.state.currentTheme.sections.forEach(section => {
+                    const div = document.createElement('div');
+                    div.className = `card ${section.locked ? 'locked' : ''}`;
+                    
+                    div.innerHTML = `
+                        <div class="card-icon">${section.icon}</div>
+                        <div class="card-content">
+                            <div class="card-title">${section.title}</div>
+                            <div class="card-subtitle">${section.locked ? section.devText : 'Уровней: 10'}</div>
+                        </div>
+                    `;
+
+                    if (!section.locked) {
+                        div.onclick = () => this.openSection(section.id);
+                    }
+
+                    container.appendChild(div);
+                });
+            },
+
+            openSection(sectionId) {
+                this.state.currentSection = this.state.currentTheme.sections.find(s => s.id === sectionId);
+                document.getElementById('current-section-title').innerText = this.state.currentSection.title;
+                this.renderMap();
+                this.showScreen('map-screen');
+            },
+
+            renderMap() {
+                const container = document.getElementById('path-container');
+                container.innerHTML = '';
+                
+                const section = this.state.currentSection;
+
+                section.levels.forEach((lvl, index) => {
+                    const btn = document.createElement('div');
+                    btn.classList.add('level-node');
+                    
+                    let statusClass = 'level-locked';
+                    let iconText = '🔒';
+                    
+                    const isPassed = this.state.progress.includes(lvl.id);
+                    const prevPassed = index === 0 || this.state.progress.includes(section.levels[index-1].id);
+
+                    if (lvl.type === 'active') {
+                        if (isPassed) {
+                            statusClass = 'level-passed';
+                            iconText = '⭐';
+                        } else if (prevPassed) {
+                            statusClass = 'level-active';
+                            iconText = section.icon;
+                            
+                            const mascotIcon = section.mascots[index % section.mascots.length];
+                            btn.innerHTML = `<div class="mascot-helper">${mascotIcon}</div>`;
+                        }
+                    }
+
+                    btn.classList.add(statusClass);
+                    if (statusClass === 'level-locked') btn.classList.add('locked');
+                    btn.innerHTML += iconText;
+
+                    if (statusClass !== 'level-locked') {
+                        btn.onclick = () => this.startLevel(lvl.id);
+                    }
+
+                    container.appendChild(btn);
+                });
+            },
+
+            startLevel(levelId) {
+                const levelData = this.state.currentSection.levels.find(l => l.id === levelId);
+                if (!levelData || levelData.questions.length === 0) return;
+
+                this.state.currentLevel = levelData;
+                this.state.questionIndex = 0;
+                this.state.lives = 3;
+                this.state.correctAnswersInLevel = 0;
+                
+                document.getElementById('lives-count').innerText = this.state.lives;
+                this.showScreen('game-screen');
+                this.renderQuestion();
+            },
+
+            renderQuestion() {
+                this.state.selectedAnswer = null;
+                this.state.isAnswerChecked = false;
+                
+                const qData = this.state.currentLevel.questions[this.state.questionIndex];
+
+                const qZone = document.getElementById('question-zone');
+                qZone.classList.remove('fade-in');
+                void qZone.offsetWidth;
+                qZone.classList.add('fade-in');
+
+                document.getElementById('q-title').innerText = qData.q;
+                
+                const imgEl = document.getElementById('q-image');
+                imgEl.src = qData.img;
+                
+                const progressPct = (this.state.questionIndex / this.state.currentLevel.questions.length) * 100;
+                document.getElementById('progress-bar').style.width = `${progressPct}%`;
+
+                const grid = document.getElementById('answers-grid');
+                grid.innerHTML = '';
+                
+                qData.options.forEach((opt, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'answer-card';
+                    card.innerText = opt;
+                    card.onclick = () => this.selectAnswer(index, card);
+                    grid.appendChild(card);
+                });
+
+                const panel = document.getElementById('bottom-panel');
+                panel.className = 'bottom-panel';
+                const btn = document.getElementById('main-action-btn');
+                btn.innerText = 'Проверить';
+                btn.disabled = true;
+                btn.className = 'btn btn-primary';
+            },
+
+            selectAnswer(index, cardElement) {
+                if (this.state.isAnswerChecked) return;
+
+                document.querySelectorAll('.answer-card').forEach(c => c.classList.remove('selected'));
+                cardElement.classList.add('selected');
+                
+                this.state.selectedAnswer = index;
+                document.getElementById('main-action-btn').disabled = false;
+            },
+
+            handleMainAction() {
+                if (!this.state.isAnswerChecked) {
+                    this.checkAnswer();
+                } else {
+                    this.nextQuestion();
+                }
+            },
+
+            checkAnswer() {
+                this.state.isAnswerChecked = true;
+                const qData = this.state.currentLevel.questions[this.state.questionIndex];
+                const isCorrect = this.state.selectedAnswer === qData.correct;
+                
+                const cards = document.querySelectorAll('.answer-card');
+                const panel = document.getElementById('bottom-panel');
+                const btn = document.getElementById('main-action-btn');
+
+                if (isCorrect) {
+                    cards[this.state.selectedAnswer].classList.add('correct');
+                    panel.classList.add('state-correct');
+                    btn.innerText = 'Продолжить';
+                    this.playSound('sfx-correct');
+                    this.state.correctAnswersInLevel++;
+                } else {
+                    cards[this.state.selectedAnswer].classList.add('incorrect');
+                    cards[qData.correct].classList.add('correct');
+
+                    document.getElementById('correct-answer-text').innerText = qData.options[qData.correct];
+                    panel.classList.add('state-incorrect');
+                    
+                    this.state.lives--;
+                    document.getElementById('lives-count').innerText = this.state.lives;
+                    
+                    btn.innerText = 'Понятно';
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-danger');
+                    
+                    this.playSound('sfx-incorrect');
+
+                    if (this.state.lives <= 0) {
+                        btn.innerText = 'Завершить';
+                    }
+                }
+            },
+
+            nextQuestion() {
+                if (this.state.lives <= 0) {
+                    this.showDefeatScreen();
+                    return;
+                }
+
+                this.state.questionIndex++;
+                if (this.state.questionIndex >= this.state.currentLevel.questions.length) {
+                    this.finishLevel();
+                } else {
+                    this.renderQuestion();
+                }
+            },
+
+            finishLevel() {
+                document.getElementById('progress-bar').style.width = '100%';
+                this.playSound('sfx-finish');
+                
+                const total = this.state.currentLevel.questions.length;
+                const accuracy = Math.round((this.state.correctAnswersInLevel / total) * 100);
+                
+                document.getElementById('res-score').innerText = `${accuracy}%`;
+                document.getElementById('res-lives').innerText = this.state.lives;
+                
+                this.saveProgress(this.state.currentLevel.id);
+                this.renderMap();
+                this.showScreen('result-screen');
+            },
+
+            showDefeatScreen() {
+                this.showScreen('defeat-screen');
+            },
+
+            retryLevel() {
+                this.startLevel(this.state.currentLevel.id);
+            },
+
+            showExitModal() {
+                const modal = document.getElementById('exit-modal');
+                modal.style.display = 'flex';
+                void modal.offsetWidth;
+                modal.classList.add('visible');
+            },
+
+            hideExitModal() {
+                const modal = document.getElementById('exit-modal');
+                modal.classList.remove('visible');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            },
+
+            confirmExit() {
+                this.hideExitModal();
+                this.returnToMap();
+            },
+
+            returnToMap() {
+                this.showScreen('map-screen');
+            }
+        };
+
+        window.onload = () => App.init();
+
+    </script>
+</body>
+</html>
