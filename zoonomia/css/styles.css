@@ -28,14 +28,14 @@ body {
     color: var(--text-dark);
     display: flex;
     justify-content: center;
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
 }
 
 #app-container {
     width: 100%;
     max-width: 480px;
-    height: 100%;
+    height: 100dvh;
     position: relative;
     background-color: var(--white);
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
@@ -416,7 +416,7 @@ body {
 .answer-card.incorrect { border-color: var(--danger-red-shadow); background-color: #ffdfdf; color: var(--danger-red-shadow); }
 
 .bottom-panel {
-    padding: 20px; border-top: 2px solid var(--locked-gray); transition: background-color 0.3s;
+    padding: 20px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); border-top: 2px solid var(--locked-gray); transition: background-color 0.3s; flex-shrink: 0;
 }
 .bottom-panel.state-correct { background-color: #d7ffb8; border-top-color: var(--primary-green-shadow); }
 .bottom-panel.state-incorrect { background-color: #ffdfdf; border-top-color: var(--danger-red-shadow); }
