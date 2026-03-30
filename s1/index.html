@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой тихий уголок - Добро пожаловать!</title>
+    <style>
+        /* CSS Reset & Base Setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* Nostalgic paper/linen texture using CSS pattern */
+            background-color: #f4f0e6;
+            background-image: radial-gradient(#d7d0c0 1px, transparent 1px);
+            background-size: 12px 12px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            color: #4a4a4a;
+            line-height: 1.6;
+            cursor: default;
+            overflow-x: hidden;
+        }
+
+        /* Sparkle trail effect class */
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #fffacd;
+            border: 1px solid #ffd700;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 4px #ffda85;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        /* Main Container - 960px Fixed Width */
+        #wrapper {
+            width: 960px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border: 1px solid #d4cbb8;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        /* Glossy Header */
+        #header {
+            background: linear-gradient(to bottom, #fde4ce 0%, #f7c9a4 100%);
+            border-bottom: 2px solid #e0b089;
+            padding: 30px 20px;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            position: relative;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        #header h1 {
+            font-family: 'Georgia', serif;
+            color: #8b5a2b;
+            font-size: 36px;
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        #header p.subtitle {
+            font-style: italic;
+            color: #a0522d;
+            font-size: 16px;
+        }
+
+        /* Layout Setup */
+        #content-area {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        #main-column {
+            flex: 1;
+            width: 650px; /* Legacy rigid width constraint */
+        }
+
+        #sidebar {
+            width: 260px;
+            flex-shrink: 0;
+        }
+
+        /* General Widget Styles (Skeuomorphism) */
+        .widget {
+            background: #fdfcfb;
+            border: 1px solid #e3dec9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .widget-title {
+            font-family: 'Georgia', serif;
+            color: #7b5e43;
+            font-size: 20px;
+            border-bottom: 1px dashed #dcbca2;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            text-shadow: 1px 1px 0 #fff;
+        }
+
+        /* Glossy Buttons */
+        .glossy-btn {
+            background: linear-gradient(to bottom, #ffffff 0%, #e6e6e6 100%);
+            border: 1px solid #b3b3b3;
+            border-radius: 6px;
+            padding: 8px 16px;
+            color: #333;
+            font-family: 'Trebuchet MS', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: inset 0 1px 0 white, 0 1px 2px rgba(0, 0, 0, 0.1);
+            text-shadow: 1px 1px 0 white;
+            transition: all 0.1s;
+        }
+
+        .glossy-btn:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #d4d4d4 100%);
+        }
+
+        .glossy-btn:active {
+            background: #d4d4d4;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            padding-top: 9px;
+            padding-bottom: 7px;
+        }
+
+        /* Affirmation Widget */
+        #affirmation-text {
+            font-size: 18px;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            text-align: center;
+            color: #5d4037;
+            padding: 10px;
+            background: #fff8e1;
+            border-left: 4px solid #ffcc80;
+            border-radius: 4px;
+        }
+
+        /* Tea Corner */
+        .tea-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        #tea-message {
+            color: #8d6e63;
+            font-style: italic;
+            min-height: 24px;
+            font-size: 15px;
+            margin-top: 10px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        /* Gratitude Jar (Sticky Notes) */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        #gratitude-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            font-family: 'Trebuchet MS', sans-serif;
+        }
+
+        #notes-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 10px 0;
+        }
+
+        .sticky-note {
+            background: linear-gradient(135deg, #ffffcc 0%, #ffeb99 100%);
+            width: 180px;
+            min-height: 120px;
+            padding: 15px;
+            box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.15);
+            font-family: 'Georgia', serif;
+            font-size: 14px;
+            color: #444;
+            position: relative;
+            /* Dog-ear corner effect */
+            border-bottom-right-radius: 20px 5px;
+        }
+
+        .sticky-note::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Guestbook */
+        .guest-message {
+            background: #fdfaf2;
+            border: 1px solid #eedec3;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        
+        .guest-author {
+            font-size: 12px;
+            color: #997b66;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        /* Sidebar Elements */
+        .marquee-container {
+            background: #333;
+            color: #a4d4a6; /* Retro LCD green */
+            padding: 5px;
+            border: 2px inset #666;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .status-selector {
+            width: 100%;
+            padding: 5px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* Footer */
+        #footer {
+            background: linear-gradient(to top, #e8dfc8 0%, #f4eee1 100%);
+            border-top: 1px solid #d4cbb8;
+            padding: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+        }
+
+        /* Odometer Counter */
+        .odometer {
+            display: inline-block;
+            background: #111;
+            border: 3px inset #666;
+            padding: 2px 5px;
+            margin: 10px 0;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 20px;
+            letter-spacing: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* 88x31 Badges */
+        .badges-container {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .badge-88x31 {
+            width: 88px;
+            height: 31px;
+            border: 1px solid #fff;
+            box-shadow: 0 0 0 1px #000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-family: 'Verdana', sans-serif;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .badge-love {
+            background: linear-gradient(to bottom, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            color: #a01030;
+            border-color: #d1566e;
+        }
+
+        .badge-firefox {
+            background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
+            color: #0b3c5d;
+            border-color: #1a6490;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Container for dynamic sparkles -->
+    <div id="sparkle-layer"></div>
+
+    <div id="wrapper">
+        <!-- Header Section -->
+        <div id="header">
+            <h1>Мой тихий уголок</h1>
+            <p class="subtitle">Уютное место в бескрайней сети ~ Заходи, гостем будешь</p>
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="content-area">
+            
+            <!-- Left/Main Column -->
+            <div id="main-column">
+                
+                <!-- Affirmation Widget -->
+                <div class="widget">
+                    <div class="widget-title">Аффирмация дня</div>
+                    <div id="affirmation-text">Загрузка добрых слов...</div>
+                </div>
+
+                <!-- Tea Corner Widget -->
+                <div class="widget">
+                    <div class="widget-title">Виртуальный чайный уголок</div>
+                    <p style="margin-bottom: 10px; font-size: 14px;">На улице может быть непогода, но здесь всегда тепло. Что вам налить?</p>
+                    <div class="tea-actions">
+                        <button class="glossy-btn" onclick="makeDrink('tea')">Заварить чай 🍵</button>
+                        <button class="glossy-btn" onclick="makeDrink('cocoa')">Сделать какао ☕</button>
+                    </div>
+                    <div id="tea-message"></div>
+                </div>
+
+                <!-- Gratitude Jar -->
+                <div class="widget">
+                    <div class="widget-title">Копилка добрых мыслей</div>
+                    <p style="margin-bottom: 10px; font-size: 14px;">Оставьте здесь светлую мысль, чтобы она согрела кого-то другого.</p>
+                    <div class="input-group">
+                        <input type="text" id="gratitude-input" placeholder="Напишите что-нибудь доброе..." maxlength="100">
+                        <button class="glossy-btn" onclick="addNote()">Приклеить</button>
+                    </div>
+                    <div id="notes-container">
+                        <!-- Default sticky note -->
+                        <div class="sticky-note" style="transform: rotate(-3deg);">
+                            Улыбнись! Кто-то очень рад, что ты есть на свете.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guestbook -->
+                <div class="widget">
+                    <div class="widget-title">Гостевая книга</div>
+                    <div class="guest-message">
+                        "Тут так уютно, спасибо за теплые слова!"
+                        <div class="guest-author">— Марина, 2012</div>
+                    </div>
+                    <div class="guest-message">
+                        "Зашел погреться. Всем лучей добра! ^_^"
+                        <div class="guest-author">— Неизвестный Странник</div>
+                    </div>
+                    <div class="guest-message">
+                        "Этот сайт — как глоток свежего воздуха. Поставил в закладки."
+                        <div class="guest-author">— Alex_99</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar -->
+            <div id="sidebar">
+                
+                <!-- Music Player Widget -->
+                <div class="widget">
+                    <div class="widget-title">Плеер</div>
+                    <div style="text-align: center; margin-bottom: 5px;">
+                        <button class="glossy-btn" style="padding: 2px 8px; font-size: 12px;">▶ Play</button>
+                        <button class="glossy-btn" style="padding: 2px 8px; font-size: 12px;">■ Stop</button>
+                    </div>
+                    <div class="marquee-container">
+                        <!-- Classic HTML Marquee tag for pure nostalgia -->
+                        <marquee scrollamount="3">Сейчас играет: Уютный плейлист 2012 - Осень, плед, камин.mp3</marquee>
+                    </div>
+                </div>
+
+                <!-- Status Widget -->
+                <div class="widget">
+                    <div class="widget-title">Мой статус</div>
+                    <p style="font-size: 13px;">Мое настроение сегодня:</p>
+                    <select class="status-selector">
+                        <option>Выбрать смайлик...</option>
+                        <option>Спокойное (◡‿◡✿)</option>
+                        <option>Радостное (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧</option>
+                        <option>Сонное (x_x)</option>
+                        <option>Пью чай ☕</option>
+                    </select>
+                </div>
+
+                <!-- Calendar/Clock placeholder widget typical for blogs -->
+                <div class="widget" style="text-align: center;">
+                    <div class="widget-title">Время</div>
+                    <div id="clock" style="font-family: 'Georgia'; font-size: 24px; color: #8b5a2b;"></div>
+                    <div id="date" style="font-size: 12px; color: #666;"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer Area -->
+        <div id="footer">
+            <p>Уголок спокойствия &copy; 2010-2014. Все права защищены теплотой.</p>
+            
+            <div style="margin-top: 10px;">
+                Вы — наш <br>
+                <div class="odometer">005432</div><br>
+                гость!
+            </div>
+
+            <div class="badges-container">
+                <div class="badge-88x31 badge-love">С любовью</div>
+                <div class="badge-88x31 badge-firefox">Best in FF</div>
+                <div class="badge-88x31" style="background: #ccc; border-color: #999; color: #333;">Valid HTML5</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Logic -->
+    <script>
+        // 1. Sparkle Cursor Effect (Pure Vanilla JS)
+        let lastSparkleTime = 0;
+        document.addEventListener('mousemove', function(e) {
+            const now = Date.now();
+            // Throttle sparkle creation to avoid performance issues
+            if (now - lastSparkleTime > 40) {
+                createSparkle(e.pageX, e.pageY);
+                lastSparkleTime = now;
+            }
+        });
+
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            
+            // Add some random offset
+            const offsetX = (Math.random() - 0.5) * 10;
+            const offsetY = (Math.random() - 0.5) * 10;
+            
+            sparkle.style.left = (x + offsetX) + 'px';
+            sparkle.style.top = (y + offsetY) + 'px';
+            
+            document.body.appendChild(sparkle);
+
+            // Animate and remove
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    sparkle.style.opacity = '0';
+                    sparkle.style.transform = `translateY(${20 + Math.random() * 20}px) scale(0.5)`;
+                }, 50);
+            });
+
+            setTimeout(() => {
+                if (sparkle.parentNode) {
+                    sparkle.parentNode.removeChild(sparkle);
+                }
+            }, 850);
+        }
+
+        // 2. Affirmation of the Day
+        const affirmations = [
+            "Всё обязательно будет хорошо. Просто дай себе время.",
+            "Ты делаешь достаточно. Ты — молодец.",
+            "Маленькие шаги ведут к большим переменам.",
+            "Сегодня отличный день, чтобы улыбнуться.",
+            "Позволь себе немного отдохнуть. Мир подождет.",
+            "Даже в пасмурный день солнце светит над облаками."
+        ];
+
+        function setRandomAffirmation() {
+            const randomIndex = Math.floor(Math.random() * affirmations.length);
+            document.getElementById('affirmation-text').innerText = affirmations[randomIndex];
+        }
+
+        // 3. Virtual Tea Corner
+        function makeDrink(type) {
+            const messageDiv = document.getElementById('tea-message');
+            messageDiv.style.background = '#eefeeb';
+            
+            if (type === 'tea') {
+                messageDiv.innerHTML = "Ваш ароматный травяной чай готов. 🌿 Присаживайтесь поудобнее.";
+            } else if (type === 'cocoa') {
+                messageDiv.innerHTML = "Горячее какао с зефирками ждет вас. 🍫 Укутывайтесь в плед.";
+            }
+
+            // Remove background highlight after a moment
+            setTimeout(() => {
+                messageDiv.style.background = 'transparent';
+            }, 1000);
+        }
+
+        // 4. Gratitude Jar (In-Memory Session Storage)
+        // Note: Using an in-memory array to comply with execution environment constraints 
+        // regarding persistent storage, while maintaining the requested UX for the session.
+        const sessionNotes = [];
+
+        function addNote() {
+            const input = document.getElementById('gratitude-input');
+            const text = input.value.trim();
+            
+            if (text === '') return;
+
+            sessionNotes.push(text);
+            input.value = '';
+            
+            renderNotes();
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notes-container');
+            
+            // Add the new note to the DOM
+            const noteText = sessionNotes[sessionNotes.length - 1];
+            const noteDiv = document.createElement('div');
+            noteDiv.className = 'sticky-note';
+            
+            // Random rotation between -5deg and 5deg
+            const rotation = (Math.random() * 10 - 5).toFixed(1);
+            noteDiv.style.transform = `rotate(${rotation}deg)`;
+            
+            noteDiv.innerText = noteText;
+            
+            // Prepend so new notes appear first
+            container.insertBefore(noteDiv, container.firstChild);
+        }
+
+        // Handle Enter key for input
+        document.getElementById('gratitude-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addNote();
+            }
+        });
+
+        // 5. Clock Setup
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').innerText = `${hours}:${minutes}`;
+            
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('date').innerText = now.toLocaleDateString('ru-RU', options);
+        }
+
+        // Initialization on load
+        window.onload = function() {
+            setRandomAffirmation();
+            updateClock();
+            setInterval(updateClock, 10000); // Update time every 10 seconds
+        };
+    </script>
+</body>
+</html>

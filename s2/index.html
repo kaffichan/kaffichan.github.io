@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W E L C O M E  T O  T H E  V O I D</title>
+    <style>
+        /* =========================================
+           STYLE.CSS - THE CHAOTIC HEART
+           ========================================= */
+        :root {
+            --bg-color: #000080; /* Win95 Blue */
+            --window-bg: #c0c0c0;
+            --neon-green: #39ff14;
+            --hot-pink: #ff00ff;
+            --glitch-red: #ff0000;
+            --glitch-blue: #00ffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: none !important; /* Custom cursor override */
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* No scrolling, only suffering */
+            background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000), 
+                linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            font-family: "Comic Sans MS", "Chalkboard SE", sans-serif;
+            color: #fff;
+            user-select: none;
+        }
+
+        /* CRT Overlay & Scanlines */
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.95; }
+            50% { opacity: 0.85; }
+            100% { opacity: 0.95; }
+        }
+
+        /* Custom Cursor Trail */
+        .cursor-trail {
+            position: fixed;
+            pointer-events: none;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--neon-green);
+            text-shadow: 0 0 5px var(--neon-green);
+            z-index: 10000;
+            animation: fadeOut 1s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: scale(0.5) rotate(90deg); }
+        }
+
+        /* Draggable Windows */
+        .window {
+            position: absolute;
+            width: 300px;
+            background: var(--window-bg);
+            border: 3px outset #fff;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            color: #000;
+            font-family: "Times New Roman", Times, serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .window-header {
+            background: #0000aa;
+            color: white;
+            padding: 5px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .window-header:hover {
+            cursor: none; /* Keep custom cursor */
+        }
+
+        .window-close {
+            background: #c0c0c0;
+            border: 2px outset #fff;
+            color: #000;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .window-close:active { border: 2px inset #fff; }
+
+        .window-content {
+            padding: 15px;
+            text-align: center;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* Unstable Elements */
+        .unstable {
+            display: inline-block;
+            transition: transform 0.1s;
+        }
+
+        /* 88x31 Badges */
+        .badge-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            width: 200px;
+        }
+
+        .badge {
+            width: 88px;
+            height: 31px;
+            background: linear-gradient(to bottom, #ff99cc, #cc0066);
+            border: 2px solid white;
+            color: white;
+            font-family: "Pixel", "Courier New", monospace;
+            font-size: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 2px 2px 0px #000;
+        }
+        
+        .badge.void { background: linear-gradient(to bottom, #333, #000); border-color: var(--hot-pink); color: var(--hot-pink); }
+        .badge.noise { background: linear-gradient(to right, yellow, red); border-color: blue; }
+
+        /* Marquee Madness */
+        .marquee-container {
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            font-size: 2rem;
+            color: var(--hot-pink);
+            text-shadow: 2px 2px 0px #fff;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Idle Glitch State */
+        body.glitch-mode {
+            animation: bgGlitch 0.2s infinite;
+            filter: invert(1) hue-rotate(180deg) contrast(200%);
+        }
+        
+        body.glitch-mode .window {
+            transform: skew(10deg, 10deg);
+        }
+
+        @keyframes bgGlitch {
+            0% { background-position: 0 0; }
+            50% { background-position: 50px -50px; }
+            100% { background-position: -20px 20px; }
+        }
+
+        /* Star Map Floating Links */
+        .star-link {
+            position: absolute;
+            color: #fff;
+            text-decoration: none;
+            font-size: 3rem;
+            text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .star-link::after {
+            content: attr(data-label);
+            display: block;
+            font-size: 1rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .star-link:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* The Eye */
+        #watcher {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 5rem;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CRT Overlay -->
+    <div class="crt-overlay"></div>
+
+    <!-- The Watcher -->
+    <div id="watcher">👁️</div>
+
+    <!-- Obnoxious Marquee -->
+    <div class="marquee-container">
+        <marquee scrollamount="15" behavior="alternate">
+            D O N ' T  F O R G E T  T O  S I G N  T H E  G U E S T B O O K
+        </marquee>
+    </div>
+
+    <!-- Star Map Hidden Navigation -->
+    <a href="void.html" class="star-link unstable" style="top: 20%; left: 70%;" data-label="ENTER THE VOID">🪐</a>
+    <a href="memory.html" class="star-link unstable" style="top: 70%; left: 20%;" data-label="ACCESS MEMORIES">💾</a>
+
+    <!-- Main Entry Window -->
+    <div class="window" style="top: 30%; left: 35%; z-index: 100;" id="win-main">
+        <div class="window-header">
+            <span>C:\DIGITAL_GARDEN.EXE</span>
+            <div class="window-close" onclick="closeWindow('win-main')">X</div>
+        </div>
+        <div class="window-content">
+            <h2 style="color: var(--hot-pink); margin-top: 0;">W E L C O M E</h2>
+            <p>You have strayed far from the modern web.</p>
+            <p class="unstable" style="color: blue; font-weight: bold;">Click everything. Trust nothing.</p>
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50'><circle cx='25' cy='25' r='20' fill='yellow' stroke='black' stroke-width='2'/><circle cx='15' cy='20' r='3' fill='black'/><circle cx='35' cy='20' r='3' fill='black'/><path d='M 15 35 Q 25 45 35 35' stroke='black' stroke-width='2' fill='none'/></svg>" alt="smiley" class="unstable">
+            <br><br>
+            <button onclick="playNoise()" style="font-family: 'Comic Sans MS'; border: 2px outset #fff; background: #ddd;">MAKE A SOUND</button>
+        </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="badge-container">
+        <div class="badge unstable">BEST VIEWED IN NETSCAPE</div>
+        <a href="#" class="badge void unstable" onclick="triggerGlitchManually(event)">GLITCH_SYS</a>
+        <div class="badge noise unstable">WEBCORE 4 LYFE</div>
+    </div>
+
+    <!-- =========================================
+         SCRIPT.JS - THE CHAOS LOGIC
+         ========================================= -->
+    <script>
+        // 1. Audio Context (Sound Reactive Elements)
+        let audioCtx;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playNoise() {
+            initAudio();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            // Random waveforms for 8-bit feel
+            const types = ['square', 'sawtooth'];
+            oscillator.type = types[Math.floor(Math.random() * types.length)];
+            oscillator.frequency.setValueAtTime(150 + Math.random() * 800, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.5);
+            
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.5);
+            
+            // Add a visual pop
+            createFakePopup();
+        }
+
+        // 2. Custom Cursor Trail
+        const trails = ['✨', '💀', '💿', '0', '1', 'ERROR'];
+        document.addEventListener('mousemove', (e) => {
+            resetIdleTimer();
+            
+            // Chance to spawn trail
+            if (Math.random() > 0.5) {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.textContent = trails[Math.floor(Math.random() * trails.length)];
+                trail.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
+                trail.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
+                document.body.appendChild(trail);
+                
+                setTimeout(() => {
+                    trail.remove();
+                }, 1000);
+            }
+
+            // Move the watcher eye slightly
+            const watcher = document.getElementById('watcher');
+            const x = (e.clientX / window.innerWidth - 0.5) * 50;
+            const y = (e.clientY / window.innerHeight - 0.5) * 50;
+            watcher.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        });
+
+        // 3. Draggable Windows Logic (Mouse & Touch)
+        let highestZ = 100;
+
+        function makeDraggable(element) {
+            const header = element.querySelector('.window-header');
+            if (!header) return;
+
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+            header.onmousedown = dragMouseDown;
+            header.ontouchstart = dragTouchStart;
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                element.style.zIndex = ++highestZ;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function dragTouchStart(e) {
+                element.style.zIndex = ++highestZ;
+                const touch = e.touches[0];
+                pos3 = touch.clientX;
+                pos4 = touch.clientY;
+                document.ontouchend = closeDragElement;
+                document.ontouchmove = elementTouchDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function elementTouchDrag(e) {
+                const touch = e.touches[0];
+                pos1 = pos3 - touch.clientX;
+                pos2 = pos4 - touch.clientY;
+                pos3 = touch.clientX;
+                pos4 = touch.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                document.ontouchend = null;
+                document.ontouchmove = null;
+            }
+        }
+
+        // Initialize existing windows
+        document.querySelectorAll('.window').forEach(makeDraggable);
+
+        // Window Close Logic
+        window.closeWindow = function(id) {
+            const win = document.getElementById(id);
+            if (win) {
+                win.style.display = 'none';
+                playNoise(); // Satisfying crunch
+            }
+        };
+
+        // 4. Fake Popups
+        const popupMessages = [
+            "ARE YOU LOST?",
+            "DOWNLOAD MORE RAM?",
+            "THE VOID BECKONS",
+            "FATAL EXCEPTION 0x00000008",
+            "CLICK HERE TO WIN A FREE IPOD",
+            "I SEE YOU",
+            "DON'T LEAVE ME"
+        ];
+
+        let popupCount = 0;
+
+        function createFakePopup() {
+            const id = 'popup-' + popupCount++;
+            const win = document.createElement('div');
+            win.className = 'window';
+            win.id = id;
+            
+            // Random placement
+            const x = Math.random() * (window.innerWidth - 300);
+            const y = Math.random() * (window.innerHeight - 200);
+            
+            win.style.left = x + 'px';
+            win.style.top = y + 'px';
+            win.style.zIndex = ++highestZ;
+
+            const msg = popupMessages[Math.floor(Math.random() * popupMessages.length)];
+
+            win.innerHTML = `
+                <div class="window-header">
+                    <span>WARNING.SYS</span>
+                    <div class="window-close" onclick="closeWindow('${id}')">X</div>
+                </div>
+                <div class="window-content" style="background: red; color: yellow; font-weight: bold;">
+                    <h1>!</h1>
+                    <p>${msg}</p>
+                    <button onclick="closeWindow('${id}')">OK</button>
+                </div>
+            `;
+
+            document.body.appendChild(win);
+            makeDraggable(win);
+        }
+
+        // Randomly spawn popups every 15 seconds
+        setInterval(() => {
+            if (!document.body.classList.contains('glitch-mode')) {
+                createFakePopup();
+                initAudio(); // Try to play sound if user has interacted
+                if(audioCtx && audioCtx.state === 'running') {
+                    playNoise();
+                }
+            }
+        }, 15000);
+
+        // 5. Unstable Hover Jiggle
+        const unstableElements = document.querySelectorAll('.unstable');
+        unstableElements.forEach(el => {
+            el.addEventListener('mouseover', () => {
+                const rx = (Math.random() * 10 - 5) + 'px';
+                const ry = (Math.random() * 10 - 5) + 'px';
+                const rz = (Math.random() * 10 - 5) + 'deg';
+                el.style.transform = `translate(${rx}, ${ry}) rotate(${rz})`;
+            });
+            el.addEventListener('mouseout', () => {
+                el.style.transform = `translate(0, 0) rotate(0)`;
+            });
+        });
+
+        // 6. Idle Glitch Logic
+        let idleTimer;
+        const idleTimeLimit = 5000; // 5 seconds of inactivity = glitch
+
+        function triggerGlitch() {
+            document.body.classList.add('glitch-mode');
+            
+            // Spawn a bunch of popups during glitch
+            if(Math.random() > 0.7) {
+                createFakePopup();
+            }
+        }
+
+        window.triggerGlitchManually = function(e) {
+            e.preventDefault();
+            triggerGlitch();
+            setTimeout(resetIdleTimer, 1000);
+        }
+
+        function resetIdleTimer() {
+            document.body.classList.remove('glitch-mode');
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(triggerGlitch, idleTimeLimit);
+        }
+
+        // Listen for activity to stop glitching
+        document.addEventListener('mousemove', resetIdleTimer);
+        document.addEventListener('keydown', resetIdleTimer);
+        document.addEventListener('touchstart', resetIdleTimer);
+        
+        // Start idle timer on load
+        resetIdleTimer();
+
+    </script>
+</body>
+</html>
