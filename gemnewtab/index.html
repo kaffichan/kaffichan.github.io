@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск с Gemini</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --card-bg: #2d2d2d;
+            --text-primary: #e3e3e3;
+            --text-secondary: #aaaaaa;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent: #8ab4f8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .view-container {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .view-container.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 1;
+        }
+
+        .search-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 18px 24px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: white;
+            font-size: 18px;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 32px;
+            max-width: 460px;
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .icon-container {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .description {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .subheading {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .options-list {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .check-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            margin-top: 2px;
+            color: var(--text-secondary);
+        }
+
+        .option-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .option-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .retry-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .retry-btn:hover {
+            background-color: #141414;
+        }
+
+        .req-id {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="view-search" class="view-container active">
+        <div class="search-title">Поиск с Gemini</div>
+        <input type="text" id="searchInput" class="search-input" placeholder="Введите запрос и нажмите Enter..." autofocus>
+    </div>
+
+    <div id="view-loading" class="view-container">
+        <div class="spinner"></div>
+        <div style="margin-top: 20px; color: var(--text-secondary);">Установка соединения...</div>
+    </div>
+
+    <div id="view-error" class="view-container">
+        <div class="error-card">
+            <div class="card-header">
+                <div class="icon-container">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <svg style="position:absolute; top:-4px; right:-4px;" width="16" height="16" viewBox="0 0 24 24" fill="#ff5252">
+                        <circle cx="12" cy="12" r="12"></circle>
+                        <line x1="8" y1="8" x2="16" y2="16" stroke="white" stroke-width="3" stroke-linecap="round"></line>
+                        <line x1="16" y1="8" x2="8" y2="16" stroke="white" stroke-width="3" stroke-linecap="round"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <h1>VPN соединение ещё не установлено</h1>
+            <p class="description">С ним зайти не получится из-за действующих ограничений. Проверьте соединение в расширении.</p>
+
+            <span class="subheading">Вот что можно сделать:</span>
+            
+            <ul class="options-list">
+                <li class="option-item">
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <div>
+                        <div class="option-title">Включить VPN расширение</div>
+                        <div class="option-desc">Убедитесь, что ваш плагин активен.</div>
+                    </div>
+                </li>
+                <li class="option-item">
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <div>
+                        <div class="option-title">Дождаться подключения</div>
+                        <div class="option-desc">Страница автоматически обновится, как только связь будет установлена.</div>
+                    </div>
+                </li>
+            </ul>
+
+            <button class="retry-btn" id="retryBtn">Проверить сейчас</button>
+            
+            <div class="req-id">Поиск с Gemini ожидает соединения...</div>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('searchInput');
+        const viewSearch = document.getElementById('view-search');
+        const viewLoading = document.getElementById('view-loading');
+        const viewError = document.getElementById('view-error');
+        const retryBtn = document.getElementById('retryBtn');
+
+        let userQuery = '';
+        let checkingInterval = null;
+
+        function showView(viewElement) {
+            document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+            viewElement.classList.add('active');
+        }
+
+        async function checkVPNConnection() {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 1500); 
+            
+            try {
+                await fetch('https://www.instagram.com/favicon.ico?t=' + new Date().getTime(), {
+                    mode: 'no-cors',
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                return true; // Ответ получен (VPN работает)
+            } catch (error) {
+                clearTimeout(timeoutId);
+                return false; // Ошибка или таймаут (VPN выключен)
+            }
+        }
+
+        async function processSearch() {
+            if (!userQuery) return;
+            
+            showView(viewLoading);
+
+            const isConnected = await checkVPNConnection();
+
+            if (isConnected) {
+                window.location.href = `https://gemini.google.com/app?q=${encodeURIComponent(userQuery)}`;
+            } else {
+                showView(viewError);
+                startBackgroundPolling();
+            }
+        }
+
+        function startBackgroundPolling() {
+            if (checkingInterval) clearInterval(checkingInterval);
+            checkingInterval = setInterval(async () => {
+                const isConnected = await checkVPNConnection();
+                if (isConnected) {
+                    clearInterval(checkingInterval);
+                    window.location.href = `https://gemini.google.com/app?q=${encodeURIComponent(userQuery)}`;
+                }
+            }, 2500);
+        }
+
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                userQuery = input.value.trim();
+                if (userQuery) {
+                    processSearch();
+                }
+            }
+        });
+
+        retryBtn.addEventListener('click', () => {
+            if (checkingInterval) clearInterval(checkingInterval);
+            processSearch();
+        });
+    </script>
+</body>
+</html>
