@@ -2,7 +2,6 @@ def _is_valid(mat):
     if not isinstance(mat, list) or not mat:
         return False
     
-    # Проверка, что первая строка — это список
     if not isinstance(mat[0], list) or not mat[0]:
         return False
         
@@ -11,7 +10,6 @@ def _is_valid(mat):
         if not isinstance(row, list) or len(row) != cols:
             return False
         for elem in row:
-            # Проверяем, что элемент — число (int или float), но не bool
             if not isinstance(elem, (int, float)) or isinstance(elem, bool):
                 return False
     return True
@@ -53,7 +51,6 @@ def det(mat1):
     if not _is_valid(mat1) or len(mat1) != len(mat1[0]):
         return 'error'
     
-    # Копия для работы (метод Гаусса)
     n = len(mat1)
     a = [row[:] for row in mat1]
     res = 1.0
@@ -75,11 +72,10 @@ def det(mat1):
             factor = a[j][i] / a[i][i]
             for k in range(i + 1, n):
                 a[j][k] -= factor * a[i][k]
-    return round(res, 10) # Округление для избавления от шума float
+    return round(res, 10)
 
 def _get_inverse(matrix):
     n = len(matrix)
-    # Создаем расширенную матрицу [A | I]
     aug = [row[:] + [1.0 if i == j else 0.0 for j in range(n)] for i, row in enumerate(matrix)]
     
     for i in range(n):
@@ -90,7 +86,7 @@ def _get_inverse(matrix):
         aug[i], aug[pivot] = aug[pivot], aug[i]
         
         if abs(aug[i][i]) < 1e-12:
-            return None # Матрица вырожденная
+            return None
             
         div = aug[i][i]
         for j in range(i, 2 * n):
@@ -107,7 +103,7 @@ def _get_inverse(matrix):
 def diff(mat1, mat2):
     if not _is_valid(mat1) or not _is_valid(mat2):
         return 'error'
-    if len(mat2) != len(mat2[0]): # Делитель должен быть квадратным
+    if len(mat2) != len(mat2[0]):
         return 'error'
     
     inv_mat2 = _get_inverse(mat2)
@@ -118,7 +114,6 @@ def diff(mat1, mat2):
     if res == 'error':
         return 'error'
         
-    # Округление результата до 2 знаков
     return [[round(elem, 2) for elem in row] for row in res]
 
 def rank(mat1):

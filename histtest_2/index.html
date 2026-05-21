@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Даты Истории России</title>
+    <style>
+        :root {
+            --primary: #007AFF;
+            --correct: #34C759;
+            --wrong: #FF3B30;
+            --bg: #F2F2F7;
+            --card-bg: #FFFFFF;
+            --text: #000000;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text);
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .start-content h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .start-content .welcome-text {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .stats {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        button {
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            border-radius: 14px;
+            padding: 15px 5px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word;
+            width: 100%;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        button.correct {
+            background-color: var(--correct);
+            color: white;
+            border-color: var(--correct);
+        }
+
+        button.wrong {
+            background-color: var(--wrong);
+            color: white;
+            border-color: var(--wrong);
+        }
+
+        .btn-main {
+            background-color: var(--primary);
+            color: white;
+            font-size: 18px;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div id="start-screen" class="start-content">
+            <h1>История России<br>(Даты XI-XII вв.)</h1>
+            <div class="welcome-text">В базе 84 событий.<br></div>
+            <button class="btn-main" onclick="startGame()">Начать игру</button>
+        </div>
+
+        <div id="game-screen" class="hidden">
+            <div class="stats">
+                <span id="progress-text">1 / 84</span>
+                <span id="score-text">Ошибок: 0</span>
+            </div>
+            
+            <div class="card" id="question-text">
+                </div>
+
+            <div class="options-grid" id="options-container">
+                </div>
+        </div>
+
+        <div id="end-screen" class="hidden">
+            <h1 style="margin-bottom: 20px;">Игра окончена!</h1>
+            <div class="card">
+                <p style="color: #888; font-size: 16px; margin: 0;">Ваш результат:</p>
+                <h2 id="final-score" style="font-size: 48px; margin: 15px 0; color: var(--primary);"></h2>
+                <p id="final-message" style="font-size: 16px; margin: 0;"></p>
+            </div>
+            <button class="btn-main" onclick="startGame()">Начать заново</button>
+        </div>
+
+    </div>
+
+    <script>
+        const database = [
+            { "d": "1801–1825", "t": "правление Александра I" },
+            { "d": "1802", "t": "учреждение Министерств" },
+            { "d": "1803", "t": "указ о вольных хлебопашцах" },
+            { "d": "1807", "t": "Тильзитский мир" },
+            { "d": "1808-1809", "t": "русско-шведская война, присоединение Финляндии" },
+            { "d": "1812 июнь 12 - декабрь 25", "t": "Отечественная война" },
+            { "d": "1812 август 26", "t": "Бородинское сражение" },
+            { "d": "1812 сентябрь 1", "t": "военный совет в Филях" },
+            { "d": "1812 октябрь 12", "t": "бой под Малоярославцем" },
+            { "d": "1813-1814", "t": "заграничные походы русской армии" },
+            { "d": "1814-1815", "t": "Венский конгресс" },
+            { "d": "1817-1864", "t": "Кавказская война" },
+            { "d": "1825 декабрь 14", "t": "восстание декабристов" },
+            { "d": "1825–1855", "t": "правление Николая I" },
+            { "d": "1853–1856", "t": "Крымская война" },
+            { "d": "1855–1881", "t": "правление Александра II" },
+            { "d": "1861 февраль 19", "t": "Манифест об отмене крепостного права" },
+            { "d": "1864", "t": "судебная реформа, земская реформа" },
+            { "d": "1870", "t": "городская реформа" },
+            { "d": "1874", "t": "«Хождение в народ»" },
+            { "d": "1874", "t": "военная реформа" },
+            { "d": "1877–1878", "t": "русско-турецкая война" },
+            { "d": "1881–1894", "t": "правление Александра III" },
+            { "d": "1887", "t": "циркуляр о «кухаркиных детях»" },
+            { "d": "1894–1917", "t": "правление Николая II" },
+            { "d": "1904–1905", "t": "русско-японская война, Портсмутский мир" },
+            { "d": "1905 январь 9", "t": "Кровавое воскресенье" },
+            { "d": "1905 октябрь 17", "t": "Манифест «17 октября»" },
+            { "d": "1906–1911", "t": "Столыпинская аграрная реформа" },
+            { "d": "1907 июнь 3", "t": "разгон II Государственной думы и принятие нового избирательного закона" },
+            { "d": "1914 - 1918", "t": "Первая мировая война" },
+            { "d": "1917 февраль 25", "t": "Всеобщая political забастовка в Петрограде" },
+            { "d": "1917 февраль 27", "t": "Образование Временного комитета Государственной думы и Петроградского Совета рабочих и солдатских депутатов" },
+            { "d": "1917 март 2", "t": "отречение Николая II от престола. Образование Временного правительства" },
+            { "d": "1917 август", "t": "Корниловский мятеж" },
+            { "d": "1917 сентябрь 1", "t": "провозглашение России республикой" },
+            { "d": "1917 октябрь 25-26", "t": "свержение Временного правительства большевиками" },
+            { "d": "1918 январь 6-7", "t": "разгон Учредительного собрания" },
+            { "d": "1917-1922", "t": "Гражданская война в России" },
+            { "d": "1918 март 3", "t": "Брестский мир России с Германией" },
+            { "d": "1921", "t": "X съезд РКП(б), переход к новой экономической политике (НЭП)" },
+            { "d": "1922 декабрь 30", "t": "образование СССР" },
+            { "d": "1924", "t": "принятие Конституции СССР" },
+            { "d": "1925", "t": "XIV съезд ВКП(б). Принятие курса на индустриализацию в СССР" },
+            { "d": "1927", "t": "XV съезд ВКП(б). Принятие курса на коллективизацию с/х в СССР" },
+            { "d": "1934", "t": "вступление СССР in Лигу наций" },
+            { "d": "1936", "t": "принятие второй Конституции СССР" },
+            { "d": "1939 август 23", "t": "подписание советско-германского договора о ненападении" },
+            { "d": "1939 сентябрь 1 - 1945 сентябрь 2", "t": "Вторая мировая война" },
+            { "d": "1941 июнь 22 - 1945 май 9", "t": "Великая Отечественная война" },
+            { "d": "1941 декабрь", "t": "начало контрнаступления советских войск под Москвой" },
+            { "d": "1942 июль - 1943 февраль", "t": "Сталинградская битва" },
+            { "d": "1943 июль — август", "t": "Курская битва" },
+            { "d": "1945 май 8", "t": "капитуляция Германии" },
+            { "d": "1943", "t": "Тегеранская конференция лидеров СССР, США и Великобритании" },
+            { "d": "1945 февраль", "t": "Крымская (Ялтинская) конференции «большой тройки»" },
+            { "d": "1945 июль-август", "t": "Берлинская (Потсдамская) конференция лидеров стран-победительниц" },
+            { "d": "1949", "t": "образование НАТО" },
+            { "d": "1955", "t": "образование Организации Варшавского Договора (ОВД)" },
+            { "d": "1953-1964", "t": "Н.С. Хрущев во главе КПСС и СССР" },
+            { "d": "1956", "t": "ХХ съезд КПСС" },
+            { "d": "1962", "t": "Карибский кризис" },
+            { "d": "1964-1982", "t": "Л.И.Брежнев во главе КПСС и СССР" },
+            { "d": "1965", "t": "начало экономической реформы А.Н. Косыгина" },
+            { "d": "1975", "t": "Хельсинские соглашения" },
+            { "d": "1979-1989", "t": "война в Афганистане" },
+            { "d": "1985 - 1991", "t": "М.С. Горбачев во главе КПСС и СССР" },
+            { "d": "1990 март", "t": "III Съезд народных депутатов СССР. Отмена 6-й статьи Конституции СССР. Избрание М.С. Горбачева Президентом СССР" },
+            { "d": "1990 июнь 12", "t": "принятие Декларации о государственном суверенитете РСФСР" },
+            { "d": "1991 июнь 12", "t": "первые выборы Президента России" },
+            { "d": "1991 август", "t": "ГКЧП" },
+            { "d": "1991 декабрь 8", "t": "распад СССР. Подписание Декларации о создании Содружества Независимых Государств (СНГ)" },
+            { "d": "1993 октябрь 3-4", "t": "Разгон Съезда народных депутатов и Верховного совета РФ, конституционный кризис в России" },
+            { "d": "1993 декабрь 12", "t": "Всенародное голосование по проекту Конституции РФ. Принятие Конституции РФ" },
+            { "d": "1998 август 17", "t": "объявлен технический дефолт в России" },
+            { "d": "2005 сентябрь 5", "t": "Президент России В.В.Путин объявил о начале реализации программы приоритетных национальных проектов в области сельского хозяйства, жилищного строительства, здравоохранения и образования" },
+            { "d": "1993, 1995, 1999, 2003, 2007, 2011, 2016, 2021", "t": "выборы в Государственную думу" },
+            { "d": "1996, 2000, 2004, 2008, 2012, 2018, 2024", "t": "выборы Президента РФ" },
+            { "d": "2014", "t": "XXII Зимние Олимпийские игры в Сочи" },
+            { "d": "2014 март 18", "t": "воссоединение Крыма и Севастополя с Россией" },
+            { "d": "2020 март 11", "t": "объявлена пандемия Covid-19 Всемирной организацией здравоохранения" },
+            { "d": "2020", "t": "внесение поправок в Конституцию РФ" },
+            { "d": "2022 февраль 24", "t": "начало СВО на Украине" },
+            { "d": "2022 сентябрь 30", "t": "Вхождение в состав России ДНР, ЛНР, Запорожской области и Херсонской области" }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let mistakes = 0;
+        let canClick = true;
+
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+        
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const progressText = document.getElementById('progress-text');
+        const scoreText = document.getElementById('score-text');
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startGame() {
+            startScreen.classList.add('hidden'); 
+            endScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+
+            currentQuestions = shuffle([...database]); 
+            currentIndex = 0;
+            mistakes = 0;
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            canClick = true;
+            if (currentIndex >= currentQuestions.length) {
+                endGame();
+                return;
+            }
+
+            const currentData = currentQuestions[currentIndex];
+            
+            questionText.innerText = currentData.t;
+            progressText.innerText = `${currentIndex + 1} / ${currentQuestions.length}`;
+            scoreText.innerText = `Ошибок: ${mistakes}`;
+
+            let options = [currentData.d];
+            while (options.length < 4) {
+                const randomItem = database[Math.floor(Math.random() * database.length)];
+                if (!options.includes(randomItem.d)) {
+                    options.push(randomItem.d);
+                }
+            }
+            options = shuffle(options);
+
+            optionsContainer.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, currentData.d);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            if (!canClick) return;
+            canClick = false;
+
+            const buttons = optionsContainer.querySelectorAll('button');
+
+            if (selected === correct) {
+                btn.classList.add('correct');
+                setTimeout(() => {
+                    currentIndex++;
+                    showQuestion();
+                }, 700);
+            } else {
+                btn.classList.add('wrong');
+                mistakes++;
+                scoreText.innerText = `Ошибок: ${mistakes}`;
+                
+                buttons.forEach(b => {
+                    if (b.innerText === correct) {
+                        b.classList.add('correct');
+                    }
+                });
+
+                setTimeout(() => {
+                    currentIndex++;
+                    showQuestion();
+                }, 1500);
+            }
+        }
+
+        function endGame() {
+            gameScreen.classList.add('hidden');
+            startScreen.classList.add('hidden');
+            endScreen.classList.remove('hidden');
+            
+            const finalScore = document.getElementById('final-score');
+            const finalMessage = document.getElementById('final-message');
+            
+            const total = currentQuestions.length;
+            const correct = total - mistakes;
+            const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            const displayPercent = percent < 0 ? 0 : percent;
+
+            finalScore.innerText = `${displayPercent}%`;
+            
+            if (displayPercent === 100) finalMessage.innerText = "Идеально! Вы готовы к экзамену.";
+            else if (displayPercent >= 90) finalMessage.innerText = "Отличный результат!";
+            else if (displayPercent >= 70) finalMessage.innerText = "Хорошо, но есть пробелы.";
+            else if (displayPercent >= 50) finalMessage.innerText = "Неплохо, но можно повторить.";
+            else finalMessage.innerText = "Стоит подучить даты.";
+        }
+    </script>
+</body>
+</html>
