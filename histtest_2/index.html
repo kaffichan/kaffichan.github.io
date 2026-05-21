@@ -74,7 +74,7 @@
 
         .options-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 12px;
         }
 
@@ -82,8 +82,8 @@
             background: var(--card-bg);
             border: 2px solid transparent;
             border-radius: 14px;
-            padding: 15px 5px;
-            font-size: 16px;
+            padding: 15px 15px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--primary);
             cursor: pointer;
@@ -133,7 +133,7 @@
     <div class="container">
         
         <div id="start-screen" class="start-content">
-            <h1>История России<br>(Даты XI-XII вв.)</h1>
+            <h1>История России<br>(Даты XIX-XXI вв.)</h1>
             <div class="welcome-text">В базе 84 событий.<br></div>
             <button class="btn-main" onclick="startGame()">Начать игру</button>
         </div>
@@ -144,11 +144,9 @@
                 <span id="score-text">Ошибок: 0</span>
             </div>
             
-            <div class="card" id="question-text">
-                </div>
+            <div class="card" id="question-text"></div>
 
-            <div class="options-grid" id="options-container">
-                </div>
+            <div class="options-grid" id="options-container"></div>
         </div>
 
         <div id="end-screen" class="hidden">
@@ -196,7 +194,7 @@
             { "d": "1906–1911", "t": "Столыпинская аграрная реформа" },
             { "d": "1907 июнь 3", "t": "разгон II Государственной думы и принятие нового избирательного закона" },
             { "d": "1914 - 1918", "t": "Первая мировая война" },
-            { "d": "1917 февраль 25", "t": "Всеобщая political забастовка в Петрограде" },
+            { "d": "1917 февраль 25", "t": "Всеобщая политическая забастовка в Петрограде" },
             { "d": "1917 февраль 27", "t": "Образование Временного комитета Государственной думы и Петроградского Совета рабочих и солдатских депутатов" },
             { "d": "1917 март 2", "t": "отречение Николая II от престола. Образование Временного правительства" },
             { "d": "1917 август", "t": "Корниловский мятеж" },
@@ -210,7 +208,7 @@
             { "d": "1924", "t": "принятие Конституции СССР" },
             { "d": "1925", "t": "XIV съезд ВКП(б). Принятие курса на индустриализацию в СССР" },
             { "d": "1927", "t": "XV съезд ВКП(б). Принятие курса на коллективизацию с/х в СССР" },
-            { "d": "1934", "t": "вступление СССР in Лигу наций" },
+            { "d": "1934", "t": "вступление СССР в Лигу наций" },
             { "d": "1936", "t": "принятие второй Конституции СССР" },
             { "d": "1939 август 23", "t": "подписание советско-германского договора о ненападении" },
             { "d": "1939 сентябрь 1 - 1945 сентябрь 2", "t": "Вторая мировая война" },
@@ -294,15 +292,17 @@
 
             const currentData = currentQuestions[currentIndex];
             
-            questionText.innerText = currentData.t;
+            // Теперь в вопросе показываем дату
+            questionText.innerText = currentData.d;
             progressText.innerText = `${currentIndex + 1} / ${currentQuestions.length}`;
             scoreText.innerText = `Ошибок: ${mistakes}`;
 
-            let options = [currentData.d];
+            // Теперь в варианты добавляем текст событий
+            let options = [currentData.t];
             while (options.length < 4) {
                 const randomItem = database[Math.floor(Math.random() * database.length)];
-                if (!options.includes(randomItem.d)) {
-                    options.push(randomItem.d);
+                if (!options.includes(randomItem.t)) {
+                    options.push(randomItem.t);
                 }
             }
             options = shuffle(options);
@@ -311,7 +311,7 @@
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.innerText = opt;
-                btn.onclick = () => checkAnswer(btn, opt, currentData.d);
+                btn.onclick = () => checkAnswer(btn, opt, currentData.t);
                 optionsContainer.appendChild(btn);
             });
         }
